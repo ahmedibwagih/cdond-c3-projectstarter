@@ -698,49 +698,110 @@ jobs:
 workflows:
   default:
     jobs:         
-      - build-frontend
-      - build-backend
+      - build-frontend:
+          context:
+          - AWSPolicy
+          - Slack-notifications                                               
+      - build-backend:
+          context:
+          - AWSPolicy
+          - Slack-notifications       
       - test-frontend:
+          context:
+          - AWSPolicy
+          - Slack-notifications       
           requires: [build-frontend]
       - test-backend:
+          context:
+          - AWSPolicy
+          - Slack-notifications       
           requires: [build-backend]
       - scan-backend:
+          context:
+          - AWSPolicy
+          - Slack-notifications       
           requires: [build-backend]
       - scan-frontend:
+          context:
+          - AWSPolicy
+          - Slack-notifications      
           requires: [build-frontend]
-      - deploy-infrastructure:
+      - hold-to-check-build:                                                    
           type: approval
-          requires: [scan-frontend,scan-backend,test-frontend,test-backend]
+          requires:
+           - scan-frontend
+           - scan-backend
+           - test-frontend
+           - test-backend
+          context:
+          - Slack-notifications           
+      - deploy-infrastructure:
+          context:
+          - AWSPolicy
+          - Slack-notifications       
+          requires: [hold-to-check-build]
+          filters:
+            branches:
+              only: [main]
       - hold-to-check-infrastructure:
           type: approval
           requires:
           - deploy-infrastructure
+          context:
+          - Slack-notifications               
       - configure-infrastructure:
+          context:
+          - AWSPolicy
+          - Slack-notifications        
           requires: [hold-to-check-infrastructure]
       - hold-to-check-configure-server:
           type: approval
           requires: 
           - configure-infrastructure
           - deploy-infrastructure
+          context:
+          - Slack-notifications                              
       - run-migrations:
+          context:
+          - AWSPolicy
+          - Slack-notifications       
           requires: [hold-to-check-configure-server]
       - deploy-frontend:
+          context:
+          - AWSPolicy
+          - Slack-notifications       
           requires: [run-migrations]
       - hold-to-check-frontend-deploy:
           type: approval
           requires: [deploy-frontend]
+          context:
+          - Slack-notifications 
       - deploy-backend:
-           requires: [hold-to-check-frontend-deploy]         
+          context:
+          - AWSPolicy
+          - Slack-notifications      
+          requires: [hold-to-check-frontend-deploy]         
       - hold-to-check-backend-deploy:
           type: approval
           requires:
           - deploy-backend
           - deploy-frontend
+          context:
+          - Slack-notifications          
       - smoke-test:
+          context:
+          - AWSPolicy
+          - Slack-notifications 
           requires:
           - hold-to-check-frontend-deploy
           - hold-to-check-backend-deploy             
       - cloudfront-update:
-           requires: [smoke-test]
+          context:
+          - AWSPolicy
+          - Slack-notifications      
+          requires: [smoke-test]
       - cleanup:
+          context:
+          - AWSPolicy
+          - Slack-notifications       
           requires: [cloudfront-update]
