@@ -28,20 +28,16 @@ Resources:
       InstanceType: t2.micro
       SecurityGroups:
         - Ref: InstanceSecurityGroup
-      KeyName: udacity # If you use another key pair name, you should change this value to match.
-      # If this ami id is not available for you, you can find another (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/finding-an-ami.html)
-      # Ubuntu 18 or higher works fine
+      KeyName: udacity 
+
       ImageId: ami-068663a3c619dd892 
       Tags:
         - Key: Name
           Value: !Sub backend-${ID}
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >
-    Abdelrazek Rizk / UdaPeople backend stack.
-    Project-3-Give-Your-Application-Auto-Deploy-Superpowers 
-    deploy APP servers using CloudFormation
-    using Ubuntu 20 Operating System with two vCPUs and 8GB of RAM and 25GB of disk space security groups
-     
+    UdaPeople backend stack.
+    
 
 
 Parameters:
