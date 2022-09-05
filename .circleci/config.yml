@@ -740,7 +740,7 @@ workflows:
           context:
           - AWSPolicy
           - Slack-notifications       
-           requires: [hold-to-check-configure-server]
+          requires: [hold-to-check-configure-server]
       - deploy-frontend:
           context:
           - AWSPolicy
