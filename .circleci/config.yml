@@ -43,7 +43,7 @@ defaults-deploy-frontend: &defaults-deploy-frontend
 
 version: 2.1
 orbs:                                                   
-  slack: circleci/slack@4.4# Implement event-based notifications across all of your CI/CD pipelines
+  slack: circleci/slack@4.4
                                                        
 commands:
   destroy-environment:
