@@ -321,7 +321,7 @@ jobs:
     steps:                                               
       - checkout
       - add_ssh_keys:                                   
-          fingerprints: ["50:59:e2:92:0f:81:91:1c:c8:fa:3e:ba:d3:ac:4a:0b"]   
+          fingerprints: ["30:09:05:56:ae:23:60:40:19:64:11:ff:2a:06:94:18"]   
       - attach_workspace:
           at: ~/                                         
 
@@ -344,8 +344,6 @@ jobs:
                     cd .circleci/ansible
                     cat inventory.txt 
                     ansible-playbook -i inventory.txt configure-server.yml
-
-                
       - revert-migrations
       - destroy-environment                 
 
@@ -452,7 +450,7 @@ jobs:
     steps:
       - checkout                                           
       - add_ssh_keys:                                      
-          fingerprints: ["50:59:e2:92:0f:81:91:1c:c8:fa:3e:ba:d3:ac:4a:0b"]  
+          fingerprints: ["30:09:05:56:ae:23:60:40:19:64:11:ff:2a:06:94:18"]  
       - run:
           name: Install archiving dependencies 
           working_directory: ~/
