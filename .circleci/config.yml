@@ -701,30 +701,30 @@ workflows:
     jobs:         
       - build-frontend:
           context:
-          - AWSPolicy
+          
           - Slack-notifications                                               
       - build-backend:
           context:
-          - AWSPolicy
+          
           - Slack-notifications       
       - test-frontend:
           context:
-          - AWSPolicy
+          
           - Slack-notifications       
           requires: [build-frontend]
       - test-backend:
           context:
-          - AWSPolicy
+          
           - Slack-notifications       
           requires: [build-backend]
       - scan-backend:
           context:
-          - AWSPolicy
+          
           - Slack-notifications       
           requires: [build-backend]
       - scan-frontend:
           context:
-          - AWSPolicy
+          
           - Slack-notifications      
           requires: [build-frontend]
       - hold-to-check-build:                                                    
@@ -738,7 +738,7 @@ workflows:
           - Slack-notifications           
       - deploy-infrastructure:
           context:
-          - AWSPolicy
+          
           - Slack-notifications       
           requires: [hold-to-check-build]
           filters:
@@ -752,7 +752,7 @@ workflows:
           - Slack-notifications               
       - configure-infrastructure:
           context:
-          - AWSPolicy
+          
           - Slack-notifications        
           requires: [hold-to-check-infrastructure]
       - hold-to-check-configure-server:
@@ -764,12 +764,12 @@ workflows:
           - Slack-notifications                              
       - run-migrations:
           context:
-          - AWSPolicy
+          
           - Slack-notifications       
           requires: [hold-to-check-configure-server]
       - deploy-frontend:
           context:
-          - AWSPolicy
+          
           - Slack-notifications       
           requires: [run-migrations]
       - hold-to-check-frontend-deploy:
@@ -779,7 +779,7 @@ workflows:
           - Slack-notifications 
       - deploy-backend:
           context:
-          - AWSPolicy
+          
           - Slack-notifications      
           requires: [hold-to-check-frontend-deploy]         
       - hold-to-check-backend-deploy:
@@ -791,18 +791,18 @@ workflows:
           - Slack-notifications          
       - smoke-test:
           context:
-          - AWSPolicy
+          
           - Slack-notifications 
           requires:
           - hold-to-check-frontend-deploy
           - hold-to-check-backend-deploy             
       - cloudfront-update:
           context:
-          - AWSPolicy
+          
           - Slack-notifications      
           requires: [smoke-test]
       - cleanup:
           context:
-          - AWSPolicy
+          
           - Slack-notifications       
           requires: [cloudfront-update]
