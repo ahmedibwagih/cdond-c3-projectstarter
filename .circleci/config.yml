@@ -728,12 +728,12 @@ workflows:
           context:
           - AWSPolicy
           - Slack-notifications        
-          requires: [hold-to-check-infrastructure]
+        #   requires: [hold-to-check-infrastructure]
       - hold-to-check-configure-server:
           type: approval
           requires: 
           - configure-infrastructure
-          - deploy-infrastructure
+         # - deploy-infrastructure
           context:
           - Slack-notifications                              
       - run-migrations:
