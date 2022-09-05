@@ -1,8 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >
-    Abdelrazek Rizk / UdaPeople Cloudfront distribution stack.
-    Project-3-Give-Your-Application-Auto-Deploy-Superpowers 
-    deploy Cloudfront APP using CloudFormation
+     UdaPeople Cloudfront  stack.
+
 
 Parameters:
   WorkflowID:
