@@ -716,7 +716,6 @@ workflows:
            - scan-backend
            - test-frontend
            - test-backend
-           
       - deploy-infrastructure:
           requires: [hold-to-check-build]
           filters:
@@ -726,7 +725,6 @@ workflows:
           type: approval
           requires:
           - deploy-infrastructure
-             
       - configure-infrastructure:
           requires: [hold-to-check-infrastructure]
       - hold-to-check-configure-server:
@@ -734,7 +732,6 @@ workflows:
           requires: 
           - configure-infrastructure
           - deploy-infrastructure
-                          
       - run-migrations:
           requires: [hold-to-check-configure-server]
       - deploy-frontend:
