@@ -368,7 +368,6 @@ jobs:
         command: |
                   ls .
                   npm install
-                #   npm run migrations:revert
                   npm run migrations >> migrationStatus.txt
                   cat migrationStatus.txt
     - persist_to_workspace:
