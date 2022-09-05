@@ -47,18 +47,18 @@ export class Employees extends React.Component<
 
   componentDidMount = () => {
     this.props.actions.fetchEmployees();
-  }
+  };
 
   getTableColumns(): Column[] {
     return [
       {
         Header: '',
         id: 'gravatar',
-        accessor: d => d.companyEmail,
+        accessor: (d) => d.companyEmail,
         width: 50,
         resizable: false,
         sortable: false,
-        Cell: row => {
+        Cell: (row) => {
           const email: string = row.value;
           return (
             <div className={style['e-gravatar-list']}>
@@ -119,7 +119,7 @@ export class Employees extends React.Component<
         width: 70,
         accessor: (e: EmployeeRowModel) => e,
         sortable: false,
-        Cell: row => {
+        Cell: (row) => {
           const employeeId = row.value.id;
           const isActive = row.value.isActive;
           if (!employeeId) {
@@ -153,21 +153,21 @@ export class Employees extends React.Component<
 
   handleTableFilter = (filterText: string) => {
     this.props.actions.fetchEmployees(filterText);
-  }
+  };
 
   handleToggleArchive = (showActive: boolean) => {
     this.setState({
       showActiveEmployees: !showActive,
     });
-  }
+  };
 
   goBackToEmployees = () => {
     this.props.history.push('/employees');
-  }
+  };
 
   goToCreateEmployee = () => {
     this.props.history.push('/employees/new');
-  }
+  };
 
   thirdLevelBreadcrumb: React.CSSProperties = {
     cursor: 'default',
@@ -179,8 +179,8 @@ export class Employees extends React.Component<
 
     const tableProps: Table.Props = {
       data: this.state.showActiveEmployees
-        ? employees.filter(e => e.isActive)
-        : employees.filter(e => !e.isActive),
+        ? employees.filter((e) => e.isActive)
+        : employees.filter((e) => !e.isActive),
       loading: isFetching,
       columns: this.getTableColumns(),
       style: { marginTop: '0px', paddingLeft: '15px', verticalAlign: 'middle' },
@@ -195,8 +195,8 @@ export class Employees extends React.Component<
         isFetching={isFetching}
         searchText={searchText}
         onSearchChange={this.handleSearch}
-        placeholder='Search in the app'
-        title='General Search'
+        placeholder="Search in the app"
+        title="General Search"
       />
     );
 
@@ -205,7 +205,7 @@ export class Employees extends React.Component<
         <SearchBar searchInput={generalSearch} />
         <div className={`${style['g-sectionbar']} ${style['grid-x']}`}>
           <Breadcrumb
-            rootPathName='View & Manage Employees'
+            rootPathName="View & Manage Employees"
             isSecondaryPage={false}
           >
             <li>
@@ -222,12 +222,12 @@ export class Employees extends React.Component<
             <div className={style['button-group']}>
               <Button
                 className={`${style.button} ${style.primary} ${style.shaddy}`}
-                title='Add Employee'
+                title="Add Employee"
                 onClick={this.goToCreateEmployee}
               >
                 <i
                   className={`${style.icon} ${style['i-plus']} ${style['margin-right']}`}
-                  aria-hidden='true'
+                  aria-hidden="true"
                 />
                 Add New Employee
               </Button>
@@ -240,7 +240,7 @@ export class Employees extends React.Component<
         </div>
       </div>
     );
-  }
+  };
 }
 
 function mapStateToProps(state: RootState): Partial<Employees.Props> {
@@ -259,7 +259,4 @@ function mapActionsToProps(
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapActionsToProps,
-)(Employees as any);
+export default connect(mapStateToProps, mapActionsToProps)(Employees as any);

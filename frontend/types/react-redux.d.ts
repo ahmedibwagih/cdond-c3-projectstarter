@@ -1,5 +1,5 @@
 import 'react-redux';
-import {Component} from 'react';
+import { Component } from 'react';
 
 declare module 'react-redux' {
   // Add removed inferrable type to support connect as decorator
@@ -11,11 +11,22 @@ declare module 'react-redux' {
   // overload connect interface to return built-in ClassDecorator
   // https://github.com/reactjs/react-redux/pull/541#issuecomment-269197189
   export interface Connect {
-    <TStateProps = any, TDispatchProps = any, TOwnProps = any, TMergedProps = any, State = any>(
+    <
+      TStateProps = any,
+      TDispatchProps = any,
+      TOwnProps = any,
+      TMergedProps = any,
+      State = any,
+    >(
       mapStateToProps: MapStateToPropsParam<TStateProps, TOwnProps, State>,
       mapDispatchToProps?: MapDispatchToPropsParam<TDispatchProps, TOwnProps>,
-      mergeProps?: MergeProps<TStateProps, TDispatchProps, TOwnProps, TMergedProps>,
-      options?: Options
+      mergeProps?: MergeProps<
+        TStateProps,
+        TDispatchProps,
+        TOwnProps,
+        TMergedProps
+      >,
+      options?: Options,
     ): InferableComponentDecorator<TOwnProps>;
   }
 }

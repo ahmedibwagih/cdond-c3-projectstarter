@@ -77,8 +77,9 @@ describe('<Pagination>', () => {
         wrapper = wrapper.setProps({ page: 3 });
       });
       it('should update the page input value', () => {
-        const inputValue = wrapper.find(`.${style.Pagination__input}`).props()
-          .value;
+        const inputValue = wrapper
+          .find(`.${style.Pagination__input}`)
+          .props().value;
         expect(inputValue).toBe('3');
       });
     });
@@ -87,18 +88,8 @@ describe('<Pagination>', () => {
         wrapper = wrapper.setProps({ loading: true });
       });
       it('should disable the pagination buttons', () => {
-        expect(
-          wrapper
-            .find(Button)
-            .at(0)
-            .props().disabled,
-        ).toEqual(true);
-        expect(
-          wrapper
-            .find(Button)
-            .at(1)
-            .props().disabled,
-        ).toEqual(true);
+        expect(wrapper.find(Button).at(0).props().disabled).toEqual(true);
+        expect(wrapper.find(Button).at(1).props().disabled).toEqual(true);
       });
     });
   });

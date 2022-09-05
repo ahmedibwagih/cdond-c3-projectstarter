@@ -9,9 +9,12 @@ export const employeesInitialState: EmployeeState = {
   employees: [],
 };
 
-export const employeeReducer = handleActions<EmployeeState, EmployeePayloadType>(
+export const employeeReducer = handleActions<
+  EmployeeState,
+  EmployeePayloadType
+>(
   {
-    [EmployeeActions.Type.FETCH_EMPLOYEES_REQUEST]: state => {
+    [EmployeeActions.Type.FETCH_EMPLOYEES_REQUEST]: (state) => {
       return {
         ...state,
         isFetching: true,
@@ -39,7 +42,7 @@ export const employeeReducer = handleActions<EmployeeState, EmployeePayloadType>
         employees: (payload as GetEmployeesResponse).employees,
       };
     },
-    [EmployeeActions.Type.ADD_EMPLOYEE_REQUEST]: state => {
+    [EmployeeActions.Type.ADD_EMPLOYEE_REQUEST]: (state) => {
       return {
         ...state,
         isFetching: true,
@@ -52,17 +55,20 @@ export const employeeReducer = handleActions<EmployeeState, EmployeePayloadType>
         errorMessage: (action.payload as Error).message || '',
       };
     },
-    [EmployeeActions.Type.ADD_EMPLOYEE_SUCCESS]: state => {
+    [EmployeeActions.Type.ADD_EMPLOYEE_SUCCESS]: (state) => {
       return {
         ...state,
         isFetching: false,
       };
     },
-    [EmployeeActions.Type.UPDATE_EMPLOYEE_DISPLAY_NAME_FAILURE]: (state, action) => {
+    [EmployeeActions.Type.UPDATE_EMPLOYEE_DISPLAY_NAME_FAILURE]: (
+      state,
+      action,
+    ) => {
       return {
         ...state,
         isFetching: false,
-        errorMessage: (action.payload as Error).message
+        errorMessage: (action.payload as Error).message,
       };
     },
   },

@@ -1,7 +1,7 @@
 import { toggles } from '../../toggles';
 
 export function shouldRender(name: string): boolean {
-  const match = toggles.find(x => {
+  const match = toggles.find((x) => {
     return x.componentName === name;
   });
   if (!match) return true;
