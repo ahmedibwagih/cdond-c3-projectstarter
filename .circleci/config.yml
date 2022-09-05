@@ -81,7 +81,7 @@ commands:
   #                     npm install
   #                     npm run migrations:revert
   #                   fi
-  
+
        
 jobs:                                                    
   build-frontend:                                           
@@ -534,15 +534,15 @@ jobs:
                     cd ~/project/; tar -zcvf backend.tar.gz ./backend/ 
                     pwd
                     ls -la
-      - run:
-          name: Deploy backend
-          no_output_timeout: 5m
-          command: |                                         
-                    pwd
-                    ls -la
-                    cd .circleci/ansible 
-                    cat inventory.txt                                                                 
-                    ansible-playbook -i inventory.txt deploy-backend.yml
+    #   - run:
+    #       name: Deploy backend
+    #       no_output_timeout: 5m
+    #       command: |                                         
+    #                 pwd
+    #                 ls -la
+    #                 cd .circleci/ansible 
+    #                 cat inventory.txt                                                                 
+    #                 ansible-playbook -i inventory.txt deploy-backend.yml
                
       #- revert-migrations
       - destroy-environment             
