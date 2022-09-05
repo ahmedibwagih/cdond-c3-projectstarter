@@ -57,10 +57,10 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-                    aws cloudformation delete-stack --stack-name udapeople-backend-12345678      
-                    aws cloudformation delete-stack --stack-name udapeople-frontend-12345678
-                    aws s3 rm s3://udapeople-frontend-12345678 --recursive
-                    aws s3 rb s3://udapeople-frontend-12345678 --force
+                    aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}  8      
+                    aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}  8
+                    aws s3 rm s3://udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}  8 --recursive
+                    aws s3 rb s3://udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}  8 --force
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -73,7 +73,7 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-                    SUCCESS='curl --insecure  https://kvdb.io/FngteSXUS4uipssbiMphWa/1234567'
+                    SUCCESS='curl --insecure  https://kvdb.io/FngteSXUS4uipssbiMphWa/${CIRCLE_WORKFLOW_ID:0:7}  '
                     echo $SUCCESS
                     if(( $SUCCESS==true )); 
                     then
@@ -222,16 +222,16 @@ jobs:
           command: |                                        
                     aws cloudformation deploy \
                     --template-file ./.circleci/files/backend.yml \
-                    --stack-name "udapeople-backend-1234567" \
-                    --parameter-overrides ID="1234567" \
+                    --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}  " \
+                    --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}  " \
                     --tags project=udapeople-backend         
       - run:
           name: Ensure front-end infrastructure exist      
           command: |                                       
                     aws cloudformation deploy \
                     --template-file ./.circleci/files/frontend.yml \
-                    --stack-name "udapeople-frontend-1234567" \
-                    --parameter-overrides ID="1234567" \
+                    --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}  " \
+                    --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}  " \
                     --tags project=udapeople-frontend             
       - run:
           name: Add back-end ip to ansible inventory
@@ -239,7 +239,7 @@ jobs:
                     cd .circleci/ansible
                     aws ec2 describe-instances \
                     --query 'Reservations[*].Instances[*].PublicIpAddress' \
-                    --filters "Name=tag:Name,Values=udapeople-backend-1234567" \
+                    --filters "Name=tag:Name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}  " \
                     --output text >> inventory.txt
                     cat inventory.txt            
       - persist_to_workspace:
@@ -252,14 +252,14 @@ jobs:
                     cd .circleci/urls
                     BackendIP=$(aws ec2 describe-instances \
                     --query 'Reservations[*].Instances[*].PublicIpAddress' \
-                    --filters "Name=tag:Name,Values=udapeople-backend-1234567" \
+                    --filters "Name=tag:Name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}  " \
                     --output text >> Backend_IP.txt)
                     declare -x BackendIP
                     BackendIP=$(cat Backend_IP.txt)
                     echo $BackendIP | cat
                     echo "$BackendIP" >> "URLs.txt" 
                     cat Backend_IP.txt
-                    curl https://kvdb.io/FngteSXUS4uipssbiMphWa/udapeople-URL-1234567 -d "http://${BackendIP}:3030"                                     
+                    curl https://kvdb.io/FngteSXUS4uipssbiMphWa/udapeople-URL-${CIRCLE_WORKFLOW_ID:0:7}   -d "http://${BackendIP}:3030"                                     
       - persist_to_workspace:
           root: ~/
           paths:
@@ -267,7 +267,7 @@ jobs:
       - run:
           name: export-udapeople-Backend-Public-URL and save  
           command: |
-                    udapeopleURL=$(curl --insecure  https://kvdb.io/FngteSXUS4uipssbiMphWa/udapeople-URL-1234567)
+                    udapeopleURL=$(curl --insecure  https://kvdb.io/FngteSXUS4uipssbiMphWa/udapeople-URL-${CIRCLE_WORKFLOW_ID:0:7}  )
                     declare -x udapeopleURL
                     echo "${udapeopleURL}" | cat
 
@@ -291,7 +291,7 @@ jobs:
                     cd .circleci/urls
                     udapeopleDNS=$(aws ec2 describe-instances \
                     --query 'Reservations[*].Instances[*].PublicDnsName' \
-                    --filters "Name=tag:Name,Values=udapeople-backend-1234567" \
+                    --filters "Name=tag:Name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}  " \
                     --output text >> DNS_URL.txt)
 
                     declare -x udapeopleDNS
@@ -388,9 +388,9 @@ jobs:
     #     command: |
     #               if grep -q "has been executed successfully." ./.circleci/migrationStatus/migrationStatus.txt
     #               then
-    #               curl https://kvdb.io/FngteSXUS4uipssbiMphWa/1234567 -d "true"
+    #               curl https://kvdb.io/FngteSXUS4uipssbiMphWa/${CIRCLE_WORKFLOW_ID:0:7}   -d "true"
     #               else
-    #               curl https://kvdb.io/FngteSXUS4uipssbiMphWa/1234567 -d "false"
+    #               curl https://kvdb.io/FngteSXUS4uipssbiMphWa/${CIRCLE_WORKFLOW_ID:0:7}   -d "false"
     #               fi
                
     - revert-migrations
@@ -434,7 +434,7 @@ jobs:
                     cd frontend
                     npm install
                     npm run build
-                    aws s3 cp ./dist s3://udapeople-frontend-"1234567" --recursive
+                    aws s3 cp ./dist s3://udapeople-frontend-"${CIRCLE_WORKFLOW_ID:0:7}  " --recursive
       - persist_to_workspace:
           root: ~/
           paths:
@@ -557,7 +557,7 @@ jobs:
       - run:
           name: Frontend smoke test.
           command: |
-                    FrontendURLtest="http://udapeople-frontend-1234567.s3-website-us-east-1.amazonaws.com/#/employees/new"
+                    FrontendURLtest="http://udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}  .s3-website-us-east-1.amazonaws.com/#/employees/new"
                     echo "${FrontendURLtest}"
                     if curl -s ${FrontendURLtest} | grep "Welcome"
                     then
@@ -623,7 +623,7 @@ jobs:
                     aws cloudformation deploy \
                     --template-file .circleci/files/cloudfront.yml \
                     --stack-name udapeople-cloudfront \
-                    --parameter-overrides WorkflowID="1234567" \
+                    --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}  " \
                     --tags project=udapeople-Update-cloudfront
       - run:
           name: Get New workflow id
@@ -676,107 +676,107 @@ jobs:
 workflows:
   default:
     jobs:         
-    #   - build-frontend:
-    #       context:
-    #       - AWSPolicy
-    #       - Slack-notifications                                               
-    #   - build-backend:
-    #       context:
-    #       - AWSPolicy
-    #       - Slack-notifications       
-    #   - test-frontend:
-    #       context:
-    #       - AWSPolicy
-    #       - Slack-notifications       
-    #       requires: [build-frontend]
-    #   - test-backend:
-    #       context:
-    #       - AWSPolicy
-    #       - Slack-notifications       
-    #       requires: [build-backend]
-    #   - scan-backend:
-    #       context:
-    #       - AWSPolicy
-    #       - Slack-notifications       
-    #       requires: [build-backend]
-    #   - scan-frontend:
-    #       context:
-    #       - AWSPolicy
-    #       - Slack-notifications      
-    #       requires: [build-frontend]
-    #   - hold-to-check-build:                                                    
-    #       type: approval
-    #       requires:
-    #        - scan-frontend
-    #        - scan-backend
-    #        - test-frontend
-    #        - test-backend
-    #       context:
-    #       - Slack-notifications           
-    #   - deploy-infrastructure:
-    #       context:
-    #       - AWSPolicy
-    #       - Slack-notifications       
-    #       requires: [hold-to-check-build]
-    #   - hold-to-check-infrastructure:
-    #       type: approval
-    #       requires:
-    #       - deploy-infrastructure
-    #       context:
-    #       - Slack-notifications               
-    #   - configure-infrastructure:
-    #       context:
-    #       - AWSPolicy
-    #       - Slack-notifications        
-    #        requires: [hold-to-check-infrastructure]
-    #   - hold-to-check-configure-server:
-    #       type: approval
-    #       requires: 
-    #       - configure-infrastructure
-    #       - deploy-infrastructure
-    #       context:
-    #       - Slack-notifications                              
-    #   - run-migrations:
-    #       context:
-    #       - AWSPolicy
-    #       - Slack-notifications       
-    #        requires: [hold-to-check-configure-server]
-    #   - deploy-frontend:
-    #       context:
-    #       - AWSPolicy
-    #       - Slack-notifications       
-    #       requires: [run-migrations]
-    #   - hold-to-check-frontend-deploy:
-    #       type: approval
-    #       requires: [deploy-frontend]
-    #       context:
-    #       - Slack-notifications 
-    #   - deploy-backend:
-    #       context:
-    #       - AWSPolicy
-    #       - Slack-notifications      
-    #       requires: [hold-to-check-frontend-deploy]         
-    #   - hold-to-check-backend-deploy:
-    #       type: approval
-    #       requires:
-    #       - deploy-backend
-    #       - deploy-frontend
-    #       context:
-    #       - Slack-notifications          
+      - build-frontend:
+          context:
+          - AWSPolicy
+          - Slack-notifications                                               
+      - build-backend:
+          context:
+          - AWSPolicy
+          - Slack-notifications       
+      - test-frontend:
+          context:
+          - AWSPolicy
+          - Slack-notifications       
+          requires: [build-frontend]
+      - test-backend:
+          context:
+          - AWSPolicy
+          - Slack-notifications       
+          requires: [build-backend]
+      - scan-backend:
+          context:
+          - AWSPolicy
+          - Slack-notifications       
+          requires: [build-backend]
+      - scan-frontend:
+          context:
+          - AWSPolicy
+          - Slack-notifications      
+          requires: [build-frontend]
+      - hold-to-check-build:                                                    
+          type: approval
+          requires:
+           - scan-frontend
+           - scan-backend
+           - test-frontend
+           - test-backend
+          context:
+          - Slack-notifications           
+      - deploy-infrastructure:
+          context:
+          - AWSPolicy
+          - Slack-notifications       
+          requires: [hold-to-check-build]
+      - hold-to-check-infrastructure:
+          type: approval
+          requires:
+          - deploy-infrastructure
+          context:
+          - Slack-notifications               
+      - configure-infrastructure:
+          context:
+          - AWSPolicy
+          - Slack-notifications        
+           requires: [hold-to-check-infrastructure]
+      - hold-to-check-configure-server:
+          type: approval
+          requires: 
+          - configure-infrastructure
+          - deploy-infrastructure
+          context:
+          - Slack-notifications                              
+      - run-migrations:
+          context:
+          - AWSPolicy
+          - Slack-notifications       
+           requires: [hold-to-check-configure-server]
+      - deploy-frontend:
+          context:
+          - AWSPolicy
+          - Slack-notifications       
+          requires: [run-migrations]
+      - hold-to-check-frontend-deploy:
+          type: approval
+          requires: [deploy-frontend]
+          context:
+          - Slack-notifications 
+      - deploy-backend:
+          context:
+          - AWSPolicy
+          - Slack-notifications      
+          requires: [hold-to-check-frontend-deploy]         
+      - hold-to-check-backend-deploy:
+          type: approval
+          requires:
+          - deploy-backend
+          - deploy-frontend
+          context:
+          - Slack-notifications          
       - smoke-test:
           context:
           - AWSPolicy
           - Slack-notifications 
-        #   requires:
-        #   - hold-to-check-frontend-deploy
-        #   - hold-to-check-backend-deploy             
+          requires:
+          - hold-to-check-frontend-deploy
+          - hold-to-check-backend-deploy             
       - cloudfront-update:
           context:
           - AWSPolicy
           - Slack-notifications      
           requires: [smoke-test]
-      - cleanup:
-          context:
-          - AWSPolicy
-          - Slack-notifications       
-          requires: [cloudfront-update]
+    #   - cleanup:
+    #       context:
+    #       - AWSPolicy
+    #       - Slack-notifications       
+    #       requires: [cloudfront-update]
