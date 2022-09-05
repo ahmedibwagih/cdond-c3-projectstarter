@@ -699,8 +699,8 @@ jobs:
 workflows:
   default:
     jobs:         
-      - build-frontend:
-      - build-backend:
+      - build-frontend
+      - build-backend
       - test-frontend:
           requires: [build-frontend]
       - test-backend:
@@ -738,12 +738,10 @@ workflows:
       - run-migrations:
           requires: [hold-to-check-configure-server]
       - deploy-frontend:
-   
           requires: [run-migrations]
       - hold-to-check-frontend-deploy:
           type: approval
           requires: [deploy-frontend]
-
       - deploy-backend:
            requires: [hold-to-check-frontend-deploy]         
       - hold-to-check-backend-deploy:
@@ -751,7 +749,6 @@ workflows:
           requires:
           - deploy-backend
           - deploy-frontend
-       
       - smoke-test:
           requires:
           - hold-to-check-frontend-deploy
