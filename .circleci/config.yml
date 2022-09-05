@@ -62,7 +62,7 @@ commands:
                     aws s3 rm s3://udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7} --recursive
                     aws s3 rb s3://udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7} --force
 
-   revert-migrations:
+  revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
       when_to_revert:                                    
@@ -217,7 +217,6 @@ jobs:
                     yum -y update upgrade
                     pwd
                     ls -la
-
       - run:
           name: Ensure back-end infrastructure exists      
           command: |                                        
@@ -226,7 +225,6 @@ jobs:
                     --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
                     --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
                     --tags project=udapeople-backend         
- 
       - run:
           name: Ensure front-end infrastructure exist      
           command: |                                       
@@ -235,7 +233,6 @@ jobs:
                     --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
                     --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
                     --tags project=udapeople-frontend             
-
       - run:
           name: Add back-end ip to ansible inventory
           command: |
@@ -249,7 +246,6 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt 
-           
       - run:
           name: Save back-end IP and send url link to kvdb.io
           command: | 
@@ -264,12 +260,10 @@ jobs:
                     echo "$BackendIP" >> "URLs.txt" 
                     cat Backend_IP.txt
                     curl https://kvdb.io/FngteSXUS4uipssbiMphWa/udapeople-URL-${CIRCLE_WORKFLOW_ID:0:7} -d "http://${BackendIP}:3030"                                     
-
       - persist_to_workspace:
           root: ~/
           paths:
             - project/.circleci/urls 
-
       - run:
           name: export-udapeople-Backend-Public-URL and save  
           command: |
