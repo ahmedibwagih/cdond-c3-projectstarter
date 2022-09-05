@@ -1,14 +1,15 @@
+AWSTemplateFormatVersion: 2010-09-09
 Description: >
-  Cloudfront distribution for UdaPeople.
+    Abdelrazek Rizk / UdaPeople Cloudfront distribution stack.
+    Project-3-Give-Your-Application-Auto-Deploy-Superpowers 
+    deploy Cloudfront APP using CloudFormation
 
 Parameters:
   WorkflowID:
     Description: Unique identifier.
     Type: String
 
-
 Resources:
-  
   CloudFrontOriginAccessIdentity:
     Type: "AWS::CloudFront::CloudFrontOriginAccessIdentity"
     Properties:
@@ -20,7 +21,7 @@ Resources:
     Properties:
       DistributionConfig:
         Origins:
-          - DomainName: !Sub "udapeople-${WorkflowID}.s3.amazonaws.com"
+          - DomainName: !Sub "udapeople-frontend-${WorkflowID}.s3.amazonaws.com"
             Id: webpage
             S3OriginConfig:
               OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}"
