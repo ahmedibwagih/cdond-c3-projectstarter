@@ -14,15 +14,9 @@
   environment:
     ENVIRONMENT: production
     TYPEORM_CONNECTION:
-
     TYPEORM_ENTITIES:
-
     TYPEORM_HOST: 
-
     TYPEORM_PORT: 
-
     TYPEORM_USERNAME:
-
     TYPEORM_PASSWORD:
-
     TYPEORM_DATABASE: 
