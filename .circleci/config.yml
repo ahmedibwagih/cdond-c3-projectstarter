@@ -43,7 +43,7 @@ defaults-deploy-frontend: &defaults-deploy-frontend
 
 version: 2.1
 orbs:                                                   
-  slack: circleci/slack@4.4
+  slack: circleci/slack@4.4# Implement event-based notifications across all of your CI/CD pipelines
                                                        
 commands:
   destroy-environment:
@@ -73,7 +73,9 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-                    SUCCESS='curl --insecure  https://kvdb.io/FngteSXUS4uipssbiMphWa/${CIRCLE_WORKFLOW_ID:0:7}'
+                    SUCCESS='curl -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" \
+                    --request GET \
+                    https://api.memstash.io/values/migration-successfull'
                     echo $SUCCESS
                     if(( $SUCCESS==true )); 
                     then
@@ -81,7 +83,6 @@ commands:
                       npm install
                       npm run migrations:revert
                     fi
-
        
 jobs:                                                    
   build-frontend:                                           
@@ -175,7 +176,7 @@ jobs:
           keys: [frontend-test]
       - run:
           name: Scan frontend
-          command: |                                     
+          command: |                                      #
                     cd frontend                               
                     npm install
                     npm audit fix --audit-level=critical --force
@@ -193,6 +194,7 @@ jobs:
           keys: [backend-test]
       - run:
           name: Scan backend
+                                                            
           command: |                                        
                     cd backend                              
                     npm install                                                      
@@ -251,7 +253,7 @@ jobs:
             - project/.circleci/ansible/inventory.txt 
            
       - run:
-          name: Save back-end IP and send url link to kvdb.io
+          name: Save back-end IP and send url link to Memstash.io
           command: | 
                     cd .circleci/urls
                     BackendIP=$(aws ec2 describe-instances \
@@ -262,9 +264,13 @@ jobs:
                     BackendIP=$(cat Backend_IP.txt)
                     echo $BackendIP | cat
                     echo "$BackendIP" >> "URLs.txt" 
-                    cat Backend_IP.txt
-                    curl https://kvdb.io/FngteSXUS4uipssbiMphWa/udapeople-URL-${CIRCLE_WORKFLOW_ID:0:7} -d "http://${BackendIP}:3030"                    
- 
+                    cat Backend_IP.txt                    
+                                        
+                    curl -H "Content-Type: text/plain" -H "token: udapeople-URL-${CIRCLE_WORKFLOW_ID:0:7}" \
+                    --request PUT \
+                    --data "http://${BackendIP}:3030" \
+                    https://api.memstash.io/values/BackendIP_${CIRCLE_WORKFLOW_ID:0:7}                                     
+
       - persist_to_workspace:
           root: ~/
           paths:
@@ -273,7 +279,10 @@ jobs:
       - run:
           name: export-udapeople-Backend-Public-URL and save  
           command: |
-                    udapeopleURL=$(curl --insecure  https://kvdb.io/FngteSXUS4uipssbiMphWa/udapeople-URL-${CIRCLE_WORKFLOW_ID:0:7})
+                    udapeopleURL=$(curl -H "token: udapeople-URL-${CIRCLE_WORKFLOW_ID:0:7}" \
+                    --request GET \
+                    https://api.memstash.io/values/BackendIP_${CIRCLE_WORKFLOW_ID:0:7})
+
                     declare -x udapeopleURL
                     echo "${udapeopleURL}" | cat
 
@@ -319,7 +328,7 @@ jobs:
           paths:
             - project/.circleci/urls             
                  
-      # - revert-migrations
+      - revert-migrations
       - destroy-environment     
 
   configure-infrastructure:
@@ -327,7 +336,7 @@ jobs:
     steps:                                               
       - checkout
       - add_ssh_keys:                                   
-          fingerprints: ["30:09:05:56:ae:23:60:40:19:64:11:ff:2a:06:94:18"]   
+          fingerprints: ["50:59:e2:92:0f:81:91:1c:c8:fa:3e:ba:d3:ac:4a:0b"]   
       - attach_workspace:
           at: ~/                                         
 
@@ -352,7 +361,7 @@ jobs:
                     ansible-playbook -i inventory.txt configure-server.yml
 
                 
-      #- revert-migrations
+      - revert-migrations
       - destroy-environment                 
 
   run-migrations:
@@ -395,13 +404,19 @@ jobs:
                     ls
                   fi
     - run:
-        name: Send migration results to kvdb.io
+        name: Send migration results to memstash.io
         command: |
                   if grep -q "has been executed successfully." ./.circleci/migrationStatus/migrationStatus.txt
                   then
-                  curl https://kvdb.io/FngteSXUS4uipssbiMphWa/${CIRCLE_WORKFLOW_ID:0:7} -d "true"
+                  curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" \
+                  --request PUT \
+                  --data "true" \
+                  https://api.memstash.io/values/migration-successfull
                   else
-                  curl https://kvdb.io/FngteSXUS4uipssbiMphWa/${CIRCLE_WORKFLOW_ID:0:7} -d "false"
+                  curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" \
+                  --request PUT \
+                  --data "false" \
+                  https://api.memstash.io/values/migration-successfull
                   fi
                
     - revert-migrations
@@ -458,7 +473,7 @@ jobs:
     steps:
       - checkout                                           
       - add_ssh_keys:                                      
-          fingerprints: ["30:09:05:56:ae:23:60:40:19:64:11:ff:2a:06:94:18"]  
+          fingerprints: ["50:59:e2:92:0f:81:91:1c:c8:fa:3e:ba:d3:ac:4a:0b"]  
       - run:
           name: Install archiving dependencies 
           working_directory: ~/
@@ -591,7 +606,7 @@ jobs:
                     yum -y install tar 
                     yum -y install gzip                           
       - attach_workspace:
-          at: .circleci/ansible/CloudFormation
+          at: .circleci/ansible/CloudFormation 
       - run:
           name: Install dependencies
           command: |
@@ -603,11 +618,11 @@ jobs:
                     Old_Workflow_ID=$(aws cloudformation list-exports \
                     --query "Exports[?Name=='WorkflowID'].Value" \
                     --no-paginate \
-                    --output text > ./.circleci/CloudFormationInfo/Old_Workflow_ID.txt)
+                    --output text > ./.circleci/CloudFormation/Old_Workflow_ID.txt)
 
                     declare -x Old_Workflow_ID
                     echo "${Old_Workflow_ID}" | cat
-                    cat .circleci/CloudFormationInfo/Old_Workflow_ID.txt
+                    cat .circleci/CloudFormation/Old_Workflow_ID.txt
                     pwd
                     ls -la
                     
@@ -618,11 +633,14 @@ jobs:
                     --region us-east-1 \
                     --query 'StackSummaries[].[StackName,StackStatus]' \
                     --output text | egrep -v 'CREATE_FAILED| CREATE_COMPLETE| UPDATE_COMPLETE| DELETE_FAILED| ROLLBACK_FAILED' \
-                    > ./.circleci/CloudFormationInfo/Old_Stack.txt)
+                    > ./.circleci/CloudFormation/Old_Stack.txt)
+
+                    # AWS CLI version 2 list-stacks
+                    # https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-stacks.html#examples
 
                     declare -x list_old_stack
                     echo "${list_old_stack}" | cat
-                    cat .circleci/CloudFormationInfo/Old_Stack.txt            
+                    cat .circleci/CloudFormation/Old_Stack.txt            
                     pwd
                     ls -la
       - run:
@@ -639,11 +657,11 @@ jobs:
                     New_Workflow_ID=$(aws cloudformation list-exports \
                     --query "Exports[?Name=='WorkflowID'].Value" \
                     --no-paginate \
-                    --output text > ./.circleci/CloudFormationInfo/New_Workflow_ID.txt)
+                    --output text > ./.circleci/CloudFormation/New_Workflow_ID.txt)
 
                     declare -x New_Workflow_ID
                     echo "${New_Workflow_ID}" | cat
-                    cat .circleci/CloudFormationInfo/New_Workflow_ID.txt
+                    cat .circleci/CloudFormation/New_Workflow_ID.txt
                     pwd
                     ls -la             
                 
@@ -726,6 +744,9 @@ workflows:
           - AWSPolicy
           - Slack-notifications       
           requires: [hold-to-check-build]
+          filters:
+            branches:
+              only: [main]
       - hold-to-check-infrastructure:
           type: approval
           requires:
