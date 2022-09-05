@@ -62,7 +62,7 @@ commands:
                     aws s3 rm s3://udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7} --recursive
                     aws s3 rb s3://udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7} --force
 
-   revert-migrations:
+  revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
       when_to_revert:                                    
@@ -81,6 +81,7 @@ commands:
                       npm install
                       npm run migrations:revert
                     fi
+
        
 jobs:                                                    
   build-frontend:                                           
@@ -174,7 +175,7 @@ jobs:
           keys: [frontend-test]
       - run:
           name: Scan frontend
-          command: |                                      #
+          command: |                                     
                     cd frontend                               
                     npm install
                     npm audit fix --audit-level=critical --force
@@ -192,7 +193,6 @@ jobs:
           keys: [backend-test]
       - run:
           name: Scan backend
-                                                            
           command: |                                        
                     cd backend                              
                     npm install                                                      
@@ -263,8 +263,8 @@ jobs:
                     echo $BackendIP | cat
                     echo "$BackendIP" >> "URLs.txt" 
                     cat Backend_IP.txt
-                    curl https://kvdb.io/FngteSXUS4uipssbiMphWa/udapeople-URL-${CIRCLE_WORKFLOW_ID:0:7} -d "http://${BackendIP}:3030"                                     
-
+                    curl https://kvdb.io/FngteSXUS4uipssbiMphWa/udapeople-URL-${CIRCLE_WORKFLOW_ID:0:7} -d "http://${BackendIP}:3030"                    
+ 
       - persist_to_workspace:
           root: ~/
           paths:
@@ -319,7 +319,7 @@ jobs:
           paths:
             - project/.circleci/urls             
                  
-      - revert-migrations
+      # - revert-migrations
       - destroy-environment     
 
   configure-infrastructure:
@@ -327,7 +327,7 @@ jobs:
     steps:                                               
       - checkout
       - add_ssh_keys:                                   
-          fingerprints: ["50:59:e2:92:0f:81:91:1c:c8:fa:3e:ba:d3:ac:4a:0b"]   
+          fingerprints: ["30:09:05:56:ae:23:60:40:19:64:11:ff:2a:06:94:18"]   
       - attach_workspace:
           at: ~/                                         
 
@@ -350,8 +350,6 @@ jobs:
                     cd .circleci/ansible
                     cat inventory.txt 
                     ansible-playbook -i inventory.txt configure-server.yml
-
-                
       - revert-migrations
       - destroy-environment                 
 
@@ -458,7 +456,7 @@ jobs:
     steps:
       - checkout                                           
       - add_ssh_keys:                                      
-          fingerprints: ["50:59:e2:92:0f:81:91:1c:c8:fa:3e:ba:d3:ac:4a:0b"]  
+          fingerprints: ["30:09:05:56:ae:23:60:40:19:64:11:ff:2a:06:94:18"]  
       - run:
           name: Install archiving dependencies 
           working_directory: ~/
@@ -591,7 +589,7 @@ jobs:
                     yum -y install tar 
                     yum -y install gzip                           
       - attach_workspace:
-          at: .circleci/ansible/CloudFormation 
+          at: .circleci/ansible/CloudFormation
       - run:
           name: Install dependencies
           command: |
@@ -603,11 +601,11 @@ jobs:
                     Old_Workflow_ID=$(aws cloudformation list-exports \
                     --query "Exports[?Name=='WorkflowID'].Value" \
                     --no-paginate \
-                    --output text > ./.circleci/CloudFormation/Old_Workflow_ID.txt)
+                    --output text > ./.circleci/CloudFormationInfo/Old_Workflow_ID.txt)
 
                     declare -x Old_Workflow_ID
                     echo "${Old_Workflow_ID}" | cat
-                    cat .circleci/CloudFormation/Old_Workflow_ID.txt
+                    cat .circleci/CloudFormationInfo/Old_Workflow_ID.txt
                     pwd
                     ls -la
                     
@@ -618,14 +616,11 @@ jobs:
                     --region us-east-1 \
                     --query 'StackSummaries[].[StackName,StackStatus]' \
                     --output text | egrep -v 'CREATE_FAILED| CREATE_COMPLETE| UPDATE_COMPLETE| DELETE_FAILED| ROLLBACK_FAILED' \
-                    > ./.circleci/CloudFormation/Old_Stack.txt)
-
-                    # AWS CLI version 2 list-stacks
-                    # https://docs.aws.amazon.com/cli/latest/reference/cloudformation/list-stacks.html#examples
+                    > ./.circleci/CloudFormationInfo/Old_Stack.txt)
 
                     declare -x list_old_stack
                     echo "${list_old_stack}" | cat
-                    cat .circleci/CloudFormation/Old_Stack.txt            
+                    cat .circleci/CloudFormationInfo/Old_Stack.txt            
                     pwd
                     ls -la
       - run:
@@ -642,11 +637,11 @@ jobs:
                     New_Workflow_ID=$(aws cloudformation list-exports \
                     --query "Exports[?Name=='WorkflowID'].Value" \
                     --no-paginate \
-                    --output text > ./.circleci/CloudFormation/New_Workflow_ID.txt)
+                    --output text > ./.circleci/CloudFormationInfo/New_Workflow_ID.txt)
 
                     declare -x New_Workflow_ID
                     echo "${New_Workflow_ID}" | cat
-                    cat .circleci/CloudFormation/New_Workflow_ID.txt
+                    cat .circleci/CloudFormationInfo/New_Workflow_ID.txt
                     pwd
                     ls -la             
                 
@@ -729,7 +724,6 @@ workflows:
           - AWSPolicy
           - Slack-notifications       
           requires: [hold-to-check-build]
-          filters:
       - hold-to-check-infrastructure:
           type: approval
           requires:
