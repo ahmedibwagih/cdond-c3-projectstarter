@@ -709,18 +709,8 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
-      - hold-to-check-build:                                                    
-          type: approval
-          requires:
-           - scan-frontend
-           - scan-backend
-           - test-frontend
-           - test-backend
       - deploy-infrastructure:
-          requires: [hold-to-check-build]
-          filters:
-            branches:
-              only: [main]
+          requires: [scan-frontend,scan-backend,test-frontend,test-backend]
       - hold-to-check-infrastructure:
           type: approval
           requires:
