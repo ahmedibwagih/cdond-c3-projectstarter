@@ -548,12 +548,12 @@ jobs:
                     aws --version 
                     pwd
                     ls -la
-      - run:
-          name: Backend smoke test.
-          command: |
-                    export Backend_url_test=$(cat .circleci/urls/API-URL.txt)
-                    echo "${Backend_url_test}"
-                    curl ${Backend_url_test}
+    #   - run:
+    #       name: Backend smoke test.
+    #       command: |
+    #                 export Backend_url_test=$(cat .circleci/urls/API-URL.txt)
+    #                 echo "${Backend_url_test}"
+    #                 curl ${Backend_url_test}
       - run:
           name: Frontend smoke test.
           command: |
@@ -736,40 +736,40 @@ workflows:
     #       - deploy-infrastructure
     #       context:
     #       - Slack-notifications                              
-      - run-migrations:
-          context:
-          - AWSPolicy
-          - Slack-notifications       
-        #   requires: [hold-to-check-configure-server]
-      - deploy-frontend:
-          context:
-          - AWSPolicy
-          - Slack-notifications       
-          requires: [run-migrations]
-      - hold-to-check-frontend-deploy:
-          type: approval
-          requires: [deploy-frontend]
-          context:
-          - Slack-notifications 
-      - deploy-backend:
-          context:
-          - AWSPolicy
-          - Slack-notifications      
-          requires: [hold-to-check-frontend-deploy]         
-      - hold-to-check-backend-deploy:
-          type: approval
-          requires:
-          - deploy-backend
-          - deploy-frontend
-          context:
-          - Slack-notifications          
+    #   - run-migrations:
+    #       context:
+    #       - AWSPolicy
+    #       - Slack-notifications       
+    #        requires: [hold-to-check-configure-server]
+    #   - deploy-frontend:
+    #       context:
+    #       - AWSPolicy
+    #       - Slack-notifications       
+    #       requires: [run-migrations]
+    #   - hold-to-check-frontend-deploy:
+    #       type: approval
+    #       requires: [deploy-frontend]
+    #       context:
+    #       - Slack-notifications 
+    #   - deploy-backend:
+    #       context:
+    #       - AWSPolicy
+    #       - Slack-notifications      
+    #       requires: [hold-to-check-frontend-deploy]         
+    #   - hold-to-check-backend-deploy:
+    #       type: approval
+    #       requires:
+    #       - deploy-backend
+    #       - deploy-frontend
+    #       context:
+    #       - Slack-notifications          
       - smoke-test:
           context:
           - AWSPolicy
           - Slack-notifications 
-          requires:
-          - hold-to-check-frontend-deploy
-          - hold-to-check-backend-deploy             
+        #   requires:
+        #   - hold-to-check-frontend-deploy
+        #   - hold-to-check-backend-deploy             
       - cloudfront-update:
           context:
           - AWSPolicy
