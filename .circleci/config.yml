@@ -676,54 +676,54 @@ jobs:
 workflows:
   default:
     jobs:         
-      - build-frontend:
-          context:
-          - AWSPolicy
-          - Slack-notifications                                               
-      - build-backend:
-          context:
-          - AWSPolicy
-          - Slack-notifications       
-      - test-frontend:
-          context:
-          - AWSPolicy
-          - Slack-notifications       
-          requires: [build-frontend]
-      - test-backend:
-          context:
-          - AWSPolicy
-          - Slack-notifications       
-          requires: [build-backend]
-      - scan-backend:
-          context:
-          - AWSPolicy
-          - Slack-notifications       
-          requires: [build-backend]
-      - scan-frontend:
-          context:
-          - AWSPolicy
-          - Slack-notifications      
-          requires: [build-frontend]
-      - hold-to-check-build:                                                    
-          type: approval
-          requires:
-           - scan-frontend
-           - scan-backend
-           - test-frontend
-           - test-backend
-          context:
-          - Slack-notifications           
-      - deploy-infrastructure:
-          context:
-          - AWSPolicy
-          - Slack-notifications       
-          requires: [hold-to-check-build]
-      - hold-to-check-infrastructure:
-          type: approval
-          requires:
-          - deploy-infrastructure
-          context:
-          - Slack-notifications               
+    #   - build-frontend:
+    #       context:
+    #       - AWSPolicy
+    #       - Slack-notifications                                               
+    #   - build-backend:
+    #       context:
+    #       - AWSPolicy
+    #       - Slack-notifications       
+    #   - test-frontend:
+    #       context:
+    #       - AWSPolicy
+    #       - Slack-notifications       
+    #       requires: [build-frontend]
+    #   - test-backend:
+    #       context:
+    #       - AWSPolicy
+    #       - Slack-notifications       
+    #       requires: [build-backend]
+    #   - scan-backend:
+    #       context:
+    #       - AWSPolicy
+    #       - Slack-notifications       
+    #       requires: [build-backend]
+    #   - scan-frontend:
+    #       context:
+    #       - AWSPolicy
+    #       - Slack-notifications      
+    #       requires: [build-frontend]
+    #   - hold-to-check-build:                                                    
+    #       type: approval
+    #       requires:
+    #        - scan-frontend
+    #        - scan-backend
+    #        - test-frontend
+    #        - test-backend
+    #       context:
+    #       - Slack-notifications           
+    #   - deploy-infrastructure:
+    #       context:
+    #       - AWSPolicy
+    #       - Slack-notifications       
+    #       requires: [hold-to-check-build]
+    #   - hold-to-check-infrastructure:
+    #       type: approval
+    #       requires:
+    #       - deploy-infrastructure
+    #       context:
+    #       - Slack-notifications               
       - configure-infrastructure:
           context:
           - AWSPolicy
