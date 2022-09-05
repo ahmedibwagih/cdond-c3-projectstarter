@@ -376,30 +376,30 @@ jobs:
                   curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
                   unzip awscliv2.zip
                   sudo ./aws/install       
-    - run:                              
-        name: Run migrations
-        working_directory: ./backend
-        command: |
-                  ls .
-                  npm install
-                  npm run migrations:revert
-                  npm run migrations >> migrationStatus.txt
-                  cat migrationStatus.txt
-    - persist_to_workspace:
-        root: ~/
-        paths:
-          - project/.circleci/migrationStatus/migrationStatus.txt          
-    - run:
-        name: Store migration Status in a file.
-        command: |
-                  cd backend
-                  if grep -q "has been executed successfully." migrationStatus.txt
-                  then
-                    touch ~/project/.circleci/migrationStatus/migrationStatus.txt
-                    cat migrationStatus.txt
-                    pwd
-                    ls
-                  fi
+    # - run:                              
+    #     name: Run migrations
+    #     working_directory: ./backend
+    #     command: |
+    #               ls .
+    #               npm install
+    #               npm run migrations:revert
+    #               npm run migrations >> migrationStatus.txt
+    #               cat migrationStatus.txt
+    # - persist_to_workspace:
+    #     root: ~/
+    #     paths:
+    #       - project/.circleci/migrationStatus/migrationStatus.txt          
+    # - run:
+    #     name: Store migration Status in a file.
+    #     command: |
+    #               cd backend
+    #               if grep -q "has been executed successfully." migrationStatus.txt
+    #               then
+    #                 touch ~/project/.circleci/migrationStatus/migrationStatus.txt
+    #                 cat migrationStatus.txt
+    #                 pwd
+    #                 ls
+    #               fi
     # - run:
     #     name: Send migration results to memstash.io
     #     command: |
