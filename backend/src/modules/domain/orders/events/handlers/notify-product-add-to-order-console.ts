@@ -4,7 +4,8 @@ import { EventsHandler } from '@nestjs/cqrs';
 
 @EventsHandler(ProductAddedToOrder)
 export class NotifyProductAddToOrderConsole
-  implements IEventHandler<ProductAddedToOrder> {
+  implements IEventHandler<ProductAddedToOrder>
+{
   handle(event: ProductAddedToOrder): any {
     console.log('Product added');
   }

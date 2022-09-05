@@ -8,18 +8,16 @@ import { SalaryType } from '../../entities/employee.entity';
 
 @CommandHandler(UpdateEmployeeName)
 @Injectable()
-export class EmployeeNameUpdater extends BaseCommandHandler<UpdateEmployeeName, void> {
+export class EmployeeNameUpdater extends BaseCommandHandler<
+  UpdateEmployeeName,
+  void
+> {
   constructor(private readonly employeeRepository: EmployeeRepository) {
     super();
   }
   async handle(command: UpdateEmployeeName): Promise<void> {
-    const {
-      employeeId,
-      firstName,
-      middleName,
-      lastName,
-      secondLastName
-    } = command;
+    const { employeeId, firstName, middleName, lastName, secondLastName } =
+      command;
 
     const employee = await this.employeeRepository.findById(employeeId);
 

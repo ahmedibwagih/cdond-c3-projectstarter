@@ -24,7 +24,7 @@ export class SyncCommandDispatcher implements ICommandDispatcher {
   constructor(private commandBus: CommandBus) {}
 
   registerValidators(commandValidators: CommandValidatorMetatype[]) {
-    commandValidators.forEach(validator => this.registerValidator(validator));
+    commandValidators.forEach((validator) => this.registerValidator(validator));
   }
 
   setModuleRef(moduleRef) {

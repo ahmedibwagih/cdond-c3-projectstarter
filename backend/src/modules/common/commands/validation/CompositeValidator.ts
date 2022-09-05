@@ -2,7 +2,8 @@ import { ICommandValidator } from './ICommandValidator';
 import { IValidationResult } from './IValidationResult';
 
 export class CompositeValidator<TCommand>
-  implements ICommandValidator<TCommand> {
+  implements ICommandValidator<TCommand>
+{
   constructor(private validators: ICommandValidator<TCommand>[]) {}
 
   async validate(command: TCommand): Promise<IValidationResult> {
@@ -15,7 +16,7 @@ export class CompositeValidator<TCommand>
     }
 
     if (results.length > 0) {
-      const errors = results.map(value => value.errors);
+      const errors = results.map((value) => value.errors);
       return {
         hasError: true,
         errors: [].concat.apply([], errors),
