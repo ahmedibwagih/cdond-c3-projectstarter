@@ -62,25 +62,25 @@ commands:
                     aws s3 rm s3://udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7} --recursive
                     aws s3 rb s3://udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7} --force
 
-  # revert-migrations:
-  #   description: Revert the last migration if successfully run in the current workflow.
-  #   parameters:
-  #     when_to_revert:                                    
-  #       type: boolean
-  #       default: true           
-  #   steps:
-  #     - run:
-  #         name: Revert migrations
-  #         when: on_fail
-  #         command: |
-  #                   SUCCESS='curl -H "token: ${CIRCLE_WORKFLOW_ID:0:7}"  --request GET  https://api.memstash.io/values/migration-successfull'
-  #                   echo $SUCCESS
-  #                   if(( $SUCCESS==true )); 
-  #                   then
-  #                     cd backend
-  #                     npm install
-  #                     npm run migrations:revert
-  #                   fi
+  revert-migrations:
+    description: Revert the last migration if successfully run in the current workflow.
+    parameters:
+      when_to_revert:                                    
+        type: boolean
+        default: true           
+    steps:
+      - run:
+          name: Revert migrations
+          when: on_fail
+          command: |
+                    SUCCESS='curl --insecure  https://kvdb.io/FngteSXUS4uipssbiMphWa/${CIRCLE_WORKFLOW_ID:0:7}'
+                    echo $SUCCESS
+                    if(( $SUCCESS==true )); 
+                    then
+                      cd backend
+                      npm install
+                      npm run migrations:revert
+                    fi
 
        
 jobs:                                                    
@@ -250,54 +250,47 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt 
            
-      # - run:
-      #     name: Save back-end IP and send url link to Memstash.io
-      #     command: | 
-      #               cd .circleci/urls
-      #               BackendIP=$(aws ec2 describe-instances \
-      #               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-      #               --filters "Name=tag:Name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-      #               --output text >> Backend_IP.txt)
-      #               declare -x BackendIP
-      #               BackendIP=$(cat Backend_IP.txt)
-      #               echo $BackendIP | cat
-      #               echo "$BackendIP" >> "URLs.txt" 
-      #               cat Backend_IP.txt                    
-                                        
-      #               curl -H "Content-Type: text/plain" -H "token: udapeople-URL-${CIRCLE_WORKFLOW_ID:0:7}" \
-      #               --request PUT \
-      #               --data "http://${BackendIP}:3030" \
-      #               https://api.memstash.io/values/BackendIP_${CIRCLE_WORKFLOW_ID:0:7}                                     
-
+      - run:
+          name: Save back-end IP and send url link to kvdb.io
+          command: | 
+                    cd .circleci/urls
+                    BackendIP=$(aws ec2 describe-instances \
+                    --query 'Reservations[*].Instances[*].PublicIpAddress' \
+                    --filters "Name=tag:Name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+                    --output text >> Backend_IP.txt)
+                    declare -x BackendIP
+                    BackendIP=$(cat Backend_IP.txt)
+                    echo $BackendIP | cat
+                    echo "$BackendIP" >> "URLs.txt" 
+                    cat Backend_IP.txt
+                    curl https://kvdb.io/FngteSXUS4uipssbiMphWa/udapeople-URL-${CIRCLE_WORKFLOW_ID:0:7} -d "http://${BackendIP}:3030"                    
+ 
       - persist_to_workspace:
           root: ~/
           paths:
             - project/.circleci/urls 
 
-      # - run:
-      #     name: export-udapeople-Backend-Public-URL and save  
-      #     command: |
-      #               udapeopleURL=$(curl -H "token: udapeople-URL-${CIRCLE_WORKFLOW_ID:0:7}" \
-      #               --request GET \
-      #               https://api.memstash.io/values/BackendIP_${CIRCLE_WORKFLOW_ID:0:7})
+      - run:
+          name: export-udapeople-Backend-Public-URL and save  
+          command: |
+                    udapeopleURL=$(curl --insecure  https://kvdb.io/FngteSXUS4uipssbiMphWa/udapeople-URL-${CIRCLE_WORKFLOW_ID:0:7})
+                    declare -x udapeopleURL
+                    echo "${udapeopleURL}" | cat
 
-      #               declare -x udapeopleURL
-      #               echo "${udapeopleURL}" | cat
-
-      #               # "export-udapeople-Backend-URL to Deploy frontend objects"
-      #               echo "$udapeopleURL" >> ".circleci/urls/udapeople-API-URL.txt"
-      #               echo "$udapeopleURL" >> ".circleci/urls/URLs.txt"
-      #               echo "$udapeopleURL" >> ".circleci/urls/tmp.txt"
+                    # "export-udapeople-Backend-URL to Deploy frontend objects"
+                    echo "$udapeopleURL" >> ".circleci/urls/udapeople-API-URL.txt"
+                    echo "$udapeopleURL" >> ".circleci/urls/URLs.txt"
+                    echo "$udapeopleURL" >> ".circleci/urls/tmp.txt"
                     
-      #               # "export-udapeople-Backend-URL-API-For Smoke Test and save"
-      #               # sed with special characters use |: some text |
+                    # "export-udapeople-Backend-URL-API-For Smoke Test and save"
+                    # sed with special characters use |: some text |
 
-      #               BackendAPI=$(sed 's|:3030|:3030/api/status|1' .circleci/urls/tmp.txt)
-      #               echo "$BackendAPI" |cat
-      #               echo "$BackendAPI" >> ".circleci/urls/API-URL.txt"
-      #               # find ~/circleci/urls/ -name 'API-URL.txt' | xargs rpl -iwd ':3030' ':3030/api/status' # yum install -y rpl
-      #               pwd 
-      #               ls -la                   
+                    BackendAPI=$(sed 's|:3030|:3030/api/status|1' .circleci/urls/tmp.txt)
+                    echo "$BackendAPI" |cat
+                    echo "$BackendAPI" >> ".circleci/urls/API-URL.txt"
+                    # find ~/circleci/urls/ -name 'API-URL.txt' | xargs rpl -iwd ':3030' ':3030/api/status' # yum install -y rpl
+                    pwd 
+                    ls -la                   
       - run:
           name: export-udapeople-frontend-Public-DNS and save  
           command: |
@@ -377,47 +370,41 @@ jobs:
                   curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
                   unzip awscliv2.zip
                   sudo ./aws/install       
-    # - run:                              
-    #     name: Run migrations
-    #     working_directory: ./backend
-    #     command: |
-    #               ls .
-    #               npm install
-    #               npm run migrations:revert
-    #               npm run migrations >> migrationStatus.txt
-    #               cat migrationStatus.txt
-    # - persist_to_workspace:
-    #     root: ~/
-    #     paths:
-    #       - project/.circleci/migrationStatus/migrationStatus.txt          
-    # - run:
-    #     name: Store migration Status in a file.
-    #     command: |
-    #               cd backend
-    #               if grep -q "has been executed successfully." migrationStatus.txt
-    #               then
-    #                 touch ~/project/.circleci/migrationStatus/migrationStatus.txt
-    #                 cat migrationStatus.txt
-    #                 pwd
-    #                 ls
-    #               fi
-    # - run:
-    #     name: Send migration results to memstash.io
-    #     command: |
-    #               if grep -q "has been executed successfully." ./.circleci/migrationStatus/migrationStatus.txt
-    #               then
-    #               curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" \
-    #               --request PUT \
-    #               --data "true" \
-    #               https://api.memstash.io/values/migration-successfull
-    #               else
-    #               curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" \
-    #               --request PUT \
-    #               --data "false" \
-    #               https://api.memstash.io/values/migration-successfull
-    #               fi
+    - run:                              
+        name: Run migrations
+        working_directory: ./backend
+        command: |
+                  ls .
+                  npm install
+                  npm run migrations:revert
+                  npm run migrations >> migrationStatus.txt
+                  cat migrationStatus.txt
+    - persist_to_workspace:
+        root: ~/
+        paths:
+          - project/.circleci/migrationStatus/migrationStatus.txt          
+    - run:
+        name: Store migration Status in a file.
+        command: |
+                  cd backend
+                  if grep -q "has been executed successfully." migrationStatus.txt
+                  then
+                    touch ~/project/.circleci/migrationStatus/migrationStatus.txt
+                    cat migrationStatus.txt
+                    pwd
+                    ls
+                  fi
+    - run:
+        name: Send migration results to kvdb.io
+        command: |
+                  if grep -q "has been executed successfully." ./.circleci/migrationStatus/migrationStatus.txt
+                  then
+                  curl https://kvdb.io/FngteSXUS4uipssbiMphWa/${CIRCLE_WORKFLOW_ID:0:7} -d "true"
+                  else
+                  curl https://kvdb.io/FngteSXUS4uipssbiMphWa/${CIRCLE_WORKFLOW_ID:0:7} -d "false"
+                  fi
                
-    # - revert-migrations
+     - revert-migrations
     - destroy-environment                 
 
   deploy-frontend:
@@ -463,7 +450,7 @@ jobs:
           root: ~/
           paths:
             - project/frontend                            
-      # - revert-migrations
+      - revert-migrations
       - destroy-environment                 
                        
   deploy-backend:
@@ -534,17 +521,17 @@ jobs:
                     cd ~/project/; tar -zcvf backend.tar.gz ./backend/ 
                     pwd
                     ls -la
-    #   - run:
-    #       name: Deploy backend
-    #       no_output_timeout: 5m
-    #       command: |                                         
-    #                 pwd
-    #                 ls -la
-    #                 cd .circleci/ansible 
-    #                 cat inventory.txt                                                                 
-    #                 ansible-playbook -i inventory.txt deploy-backend.yml
+      - run:
+          name: Deploy backend
+          no_output_timeout: 5m
+          command: |                                         
+                    pwd
+                    ls -la
+                    cd .circleci/ansible 
+                    cat inventory.txt                                                                 
+                    ansible-playbook -i inventory.txt deploy-backend.yml
                
-      #- revert-migrations
+      - revert-migrations
       - destroy-environment             
 
   smoke-test:
@@ -590,7 +577,7 @@ jobs:
                       echo "Unsuccessful front-end Smoke-test"
                     fi               
                 
-      #- revert-migrations
+      - revert-migrations
       - destroy-environment                       
 
   cloudfront-update:
@@ -660,7 +647,7 @@ jobs:
                     pwd
                     ls -la             
                 
-      #- revert-migrations
+      - revert-migrations
       - destroy-environment                
   cleanup:
     <<: *defaults-deploy                                              
@@ -690,7 +677,7 @@ jobs:
                     fi      
 
                  
-      #- revert-migrations
+      - revert-migrations
       - destroy-environment                
 
 
