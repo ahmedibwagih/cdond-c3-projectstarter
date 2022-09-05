@@ -73,7 +73,7 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-                    SUCCESS='curl --insecure  https://kvdb.io/FngteSXUS4uipssbiMphWa/1234567'
+                    SUCCESS='curl --insecure  https://kvdb.io/FngteSXUS4uipssbiMphWa/b1234567'
                     echo $SUCCESS
                     if(( $SUCCESS==true )); 
                     then
@@ -388,9 +388,9 @@ jobs:
         command: |
                   if grep -q "has been executed successfully." ./.circleci/migrationStatus/migrationStatus.txt
                   then
-                  curl https://kvdb.io/FngteSXUS4uipssbiMphWa/1234567 -d "true"
+                  curl https://kvdb.io/FngteSXUS4uipssbiMphWa/b1234567 -d "true"
                   else
-                  curl https://kvdb.io/FngteSXUS4uipssbiMphWa/1234567 -d "false"
+                  curl https://kvdb.io/FngteSXUS4uipssbiMphWa/b1234567 -d "false"
                   fi
                
     - revert-migrations
@@ -724,23 +724,23 @@ workflows:
     #       - deploy-infrastructure
     #       context:
     #       - Slack-notifications               
-      - configure-infrastructure:
-          context:
-          - AWSPolicy
-          - Slack-notifications        
-        #   requires: [hold-to-check-infrastructure]
-      - hold-to-check-configure-server:
-          type: approval
-          requires: 
-          - configure-infrastructure
-         # - deploy-infrastructure
-          context:
-          - Slack-notifications                              
+    #   - configure-infrastructure:
+    #       context:
+    #       - AWSPolicy
+    #       - Slack-notifications        
+    #        requires: [hold-to-check-infrastructure]
+    #   - hold-to-check-configure-server:
+    #       type: approval
+    #       requires: 
+    #       - configure-infrastructure
+    #       - deploy-infrastructure
+    #       context:
+    #       - Slack-notifications                              
       - run-migrations:
           context:
           - AWSPolicy
           - Slack-notifications       
-          requires: [hold-to-check-configure-server]
+        #   requires: [hold-to-check-configure-server]
       - deploy-frontend:
           context:
           - AWSPolicy
