@@ -402,6 +402,22 @@ jobs:
                     pwd
                     ls
                   fi
+    - run:
+        name: Send migration results to memstash.io
+        command: |
+                  if grep -q "has been executed successfully." ./.circleci/migrationStatus/migrationStatus.txt
+                  then
+                  curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" \
+                  --request PUT \
+                  --data "true" \
+                  https://api.memstash.io/values/migration-successfull
+                  else
+                  curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" \
+                  --request PUT \
+                  --data "false" \
+                  https://api.memstash.io/values/migration-successfull
+                  fi
+               
     - revert-migrations
     - destroy-environment                 
 
@@ -693,6 +709,7 @@ workflows:
       - scan-frontend:
           requires: [build-frontend]
       - deploy-infrastructure:
+          type: approval
           requires: [scan-frontend,scan-backend,test-frontend,test-backend]
       - hold-to-check-infrastructure:
           type: approval
