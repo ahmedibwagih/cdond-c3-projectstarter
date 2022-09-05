@@ -11,11 +11,9 @@
 
   pre_tasks:
     - name: "wait 600 seconds for target connection to become reachable/usable."
-      # Your code here
-      wait_for_connection:
+       awspol:
         
   roles:
-    # Your code here
     - configure-server
     - configure-prometheus-node-exporter
     
