@@ -194,7 +194,6 @@ jobs:
           keys: [backend-test]
       - run:
           name: Scan backend
-                                                            
           command: |                                        
                     cd backend                              
                     npm install                                                      
