@@ -740,9 +740,6 @@ workflows:
           - AWSPolicy
           - Slack-notifications       
           requires: [hold-to-check-build]
-          filters:
-            branches:
-              only: [main]
       - hold-to-check-infrastructure:
           type: approval
           requires:
