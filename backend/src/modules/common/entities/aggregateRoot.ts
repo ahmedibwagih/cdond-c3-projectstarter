@@ -43,7 +43,7 @@ export abstract class AggregateRoot<TId> implements IAggregateRoot<TId> {
   }
 
   loadFromHistory(history: DomainEvent[]) {
-    history.forEach((event) => this.rehydrate(event));
+    history.forEach(event => this.rehydrate(event));
   }
 
   publish(): DomainEvent[] {

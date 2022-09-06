@@ -102,7 +102,7 @@ export class EmployeeController {
     const notAllowed = ['pageSize', 'pageNumber'];
 
     const searchParams = Object.keys(query)
-      .filter((key) => !notAllowed.includes(key))
+      .filter(key => !notAllowed.includes(key))
       .reduce((obj, key) => {
         obj[key] = query[key];
         return obj;

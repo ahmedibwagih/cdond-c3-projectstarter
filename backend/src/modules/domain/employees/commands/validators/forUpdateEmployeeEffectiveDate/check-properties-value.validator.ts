@@ -3,11 +3,16 @@ import { JoiCommandValidator } from '../../../../../common/commands/validation';
 
 import * as joi from '@hapi/joi';
 
-export class CheckUpdateEffectiveDatePropertiesValue extends JoiCommandValidator<UpdateEmployeeEffectiveDate> {
+export class CheckUpdateEffectiveDatePropertiesValue extends JoiCommandValidator<
+  UpdateEmployeeEffectiveDate
+> {
   getSchema(command: UpdateEmployeeEffectiveDate) {
     return joi.object({
       employeeId: joi.number().required(),
-      effectiveDate: joi.string().isoDate().required(),
+      effectiveDate: joi
+      .string()
+      .isoDate()
+      .required(),
     });
   }
 }

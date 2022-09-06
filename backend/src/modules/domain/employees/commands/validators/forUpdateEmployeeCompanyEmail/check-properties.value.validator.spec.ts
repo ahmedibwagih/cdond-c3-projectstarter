@@ -5,18 +5,14 @@ describe('Update Employee Validator', () => {
   describe('when sending an update company email employee command', () => {
     it('should pass the validation if the command is correct', async () => {
       // Arrange
-      const updateEmployeeValidator =
-        new CheckUpdateCompanyEmailPropertiesValue();
+      const updateEmployeeValidator = new CheckUpdateCompanyEmailPropertiesValue();
       const params = {
         employeeId: 10,
         companyEmail: 'jimmyramos@acklenavenue.com',
       };
 
       // Act
-      const updateEmployee = new UpdateEmployeeCompanyEmail(
-        params.employeeId,
-        params.companyEmail,
-      );
+      const updateEmployee = new UpdateEmployeeCompanyEmail(params.employeeId, params.companyEmail);
       const result = await updateEmployeeValidator.validate(updateEmployee);
 
       // Assert

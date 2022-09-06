@@ -125,11 +125,11 @@ export function getDateFromString(date: string): Date {
 }
 
 function getGenderFromEnum(gender: string): Gender {
-  return Gender[Object.keys(Gender).find((key) => Gender[key] === gender)];
+  return Gender[Object.keys(Gender).find(key => Gender[key] === gender)];
 }
 
 function getSalaryTypeFromEnum(salaryType: string): SalaryType {
   return SalaryType[
-    Object.keys(SalaryType).find((key) => SalaryType[key] === salaryType)
+    Object.keys(SalaryType).find(key => SalaryType[key] === salaryType)
   ];
 }

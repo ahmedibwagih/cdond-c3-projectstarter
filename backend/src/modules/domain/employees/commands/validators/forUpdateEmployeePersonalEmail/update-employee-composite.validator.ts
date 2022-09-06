@@ -5,7 +5,9 @@ import { CheckEmployeePersonalEmailExists } from './check-employee-exists.valida
 import { CheckUpdatePersonalEmailPropertiesValue } from './check-properties-value.validator';
 
 @CommandValidator(UpdateEmployeePersonalEmail)
-export class UpdateEmployeePersonalEmailCompositeValidator extends CompositeValidator<UpdateEmployeePersonalEmail> {
+export class UpdateEmployeePersonalEmailCompositeValidator extends CompositeValidator<
+  UpdateEmployeePersonalEmail
+> {
   constructor(
     joiValidator: CheckUpdatePersonalEmailPropertiesValue,
     checkEmployeeExists: CheckEmployeePersonalEmailExists,

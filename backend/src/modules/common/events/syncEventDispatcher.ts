@@ -14,7 +14,7 @@ export class SyncEventDispatcher implements IEventDispatcher {
   publish<TEvent extends DomainEvent>(event: TEvent): Promise<void> {
     this.eventBus.publish(event);
     const eb = this.eventBus;
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       eb.publish(event);
     });
   }

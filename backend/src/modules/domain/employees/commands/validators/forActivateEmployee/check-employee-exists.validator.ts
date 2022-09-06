@@ -8,8 +8,7 @@ import { ActivateEmployee } from '../../activate-employee.command';
 
 @Injectable()
 export class CheckEmployeeExistsOnActivate
-  implements ICommandValidator<ActivateEmployee>
-{
+  implements ICommandValidator<ActivateEmployee> {
   constructor(private readonly employeeRepository: EmployeeRepository) {}
 
   async validate(command: ActivateEmployee): Promise<IValidationResult> {

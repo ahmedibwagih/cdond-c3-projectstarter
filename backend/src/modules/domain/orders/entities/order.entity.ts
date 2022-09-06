@@ -25,7 +25,7 @@ export class Order extends AggregateRoot<string> {
   @PrimaryColumn('uuid')
   id: string;
 
-  @ManyToMany((type) => Product)
+  @ManyToMany(type => Product)
   @JoinTable()
   products: Product[];
 

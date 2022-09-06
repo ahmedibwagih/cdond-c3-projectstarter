@@ -10,6 +10,6 @@ export class Product extends AggregateRoot<string> {
   @Column()
   description: string;
 
-  @ManyToMany((type) => Order)
+  @ManyToMany(type => Order)
   order: Order[];
 }

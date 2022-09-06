@@ -3,7 +3,9 @@ import { JoiCommandValidator } from '../../../../../common/commands/validation';
 
 import * as joi from '@hapi/joi';
 
-export class CheckUpdateDisplayNamePropertiesValue extends JoiCommandValidator<UpdateEmployeeDisplayName> {
+export class CheckUpdateDisplayNamePropertiesValue extends JoiCommandValidator<
+  UpdateEmployeeDisplayName
+> {
   getSchema(command: UpdateEmployeeDisplayName) {
     return joi.object({
       employeeId: joi.number().required(),

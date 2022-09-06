@@ -42,7 +42,7 @@ export abstract class BaseRepository<TId, TEntity extends IAggregateRoot<TId>> {
 
     const events = entity.publish();
 
-    events.forEach(async (event) => await this.eventDispatcher.publish(event));
+    events.forEach(async event => await this.eventDispatcher.publish(event));
 
     return recentlySavedEntity;
   }
@@ -58,7 +58,7 @@ export abstract class BaseRepository<TId, TEntity extends IAggregateRoot<TId>> {
 
   where(where: DeepPartial<TEntity>): BaseRepository<TId, TEntity> {
     Object.keys(where).forEach(
-      (key) => where[key] === undefined && delete where[key],
+      key => where[key] === undefined && delete where[key],
     );
     this.wheres.push(where);
     return this;

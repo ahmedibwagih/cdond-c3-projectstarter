@@ -46,15 +46,17 @@ export class ConfigService {
       TYPEORM_PASSWORD: Joi.string().required(),
       TYPEORM_DATABASE: Joi.string().required(),
       TYPEORM_HOST: Joi.string().required(),
-      TYPEORM_PORT: Joi.number().integer().default(5432),
+      TYPEORM_PORT: Joi.number()
+        .integer()
+        .default(5432),
       TYPEORM_MIGRATIONS: Joi.string(),
       CORS_WHITELIST: Joi.string().default(''),
       TYPEORM_LOGGING: Joi.string().default('false'),
       // AUTH0_DOMAIN: Joi.string().required(),
       // AUTH0_AUDIENCE: Joi.string().required(),
     }).unknown();
-    const { error, value: validatedEnvConfig } =
-      envVarsSchema.validate(envConfig);
+    const { error, value: validatedEnvConfig } = envVarsSchema.validate(envConfig);
+
 
     if (error) {
       throw new Error(`Config validation error: ${error.message}`);
