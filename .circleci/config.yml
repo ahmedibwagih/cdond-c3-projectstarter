@@ -214,7 +214,7 @@ jobs:
   run-migrations:
     docker:
       - image: circleci/node:13.8.0
-      steps:     
+    steps:     
       - checkout                                           
       # - attach_workspace:  
       #   at: ~/ 
@@ -250,9 +250,9 @@ jobs:
                       pwd
                       ls
                     fi
-     - run:
-        name: Send migration results to kvdb.io
-        command: |
+      - run:
+         name: Send migration results to kvdb.io
+         command: |
                   if grep -q "has been executed successfully." ./.circleci/migrationStatus/migrationStatus.txt
                   then
                   curl https://kvdb.io/FngteSXUS4uipssbiMphWa/myid123   -d "true"
