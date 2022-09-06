@@ -5,9 +5,7 @@ import { CheckEmployeeDisplayNameExists } from './check-employee-exists.validato
 import { CheckUpdateDisplayNamePropertiesValue } from './check-properties-value.validator';
 
 @CommandValidator(UpdateEmployeeDisplayName)
-export class UpdateEmployeeDisplayNameCompositeValidator extends CompositeValidator<
-  UpdateEmployeeDisplayName
-> {
+export class UpdateEmployeeDisplayNameCompositeValidator extends CompositeValidator<UpdateEmployeeDisplayName> {
   constructor(
     joiValidator: CheckUpdateDisplayNamePropertiesValue,
     checkEmployeeExists: CheckEmployeeDisplayNameExists,

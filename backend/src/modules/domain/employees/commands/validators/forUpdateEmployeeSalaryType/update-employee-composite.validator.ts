@@ -5,9 +5,7 @@ import { CheckEmployeeSalaryTypeExists } from './check-employee-exists.validator
 import { CheckUpdateSalaryTypePropertiesValue } from './check-properties-value.validator';
 
 @CommandValidator(UpdateEmployeeSalaryType)
-export class UpdateEmployeeSalaryTypeCompositeValidator extends CompositeValidator<
-  UpdateEmployeeSalaryType
-> {
+export class UpdateEmployeeSalaryTypeCompositeValidator extends CompositeValidator<UpdateEmployeeSalaryType> {
   constructor(
     joiValidator: CheckUpdateSalaryTypePropertiesValue,
     checkEmployeeExists: CheckEmployeeSalaryTypeExists,

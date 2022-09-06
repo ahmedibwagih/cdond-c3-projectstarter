@@ -5,9 +5,7 @@ import { CheckEmployeeEffectiveDateExists } from './check-employee-exists.valida
 import { CheckUpdateEffectiveDatePropertiesValue } from './check-properties-value.validator';
 
 @CommandValidator(UpdateEmployeeEffectiveDate)
-export class UpdateEmployeeEffectiveDateCompositeValidator extends CompositeValidator<
-  UpdateEmployeeEffectiveDate
-> {
+export class UpdateEmployeeEffectiveDateCompositeValidator extends CompositeValidator<UpdateEmployeeEffectiveDate> {
   constructor(
     joiValidator: CheckUpdateEffectiveDatePropertiesValue,
     checkEmployeeExists: CheckEmployeeEffectiveDateExists,

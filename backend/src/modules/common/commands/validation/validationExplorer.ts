@@ -12,7 +12,7 @@ export class ValidationExplorer {
 
   explore(): CommandValidatorOptions {
     const modules = [...this.modulesContainer.values()];
-    const validators = this.flatMap<ICommandValidator>(modules, instance =>
+    const validators = this.flatMap<ICommandValidator>(modules, (instance) =>
       this.filterProvider(instance, COMMAND_VALIDATOR_METADATA),
     );
 
@@ -24,9 +24,9 @@ export class ValidationExplorer {
     callback: (instance: InstanceWrapper) => Type<any> | undefined,
   ): Type<T>[] {
     const items = modules
-      .map(module => [...module.providers.values()].map(callback))
+      .map((module) => [...module.providers.values()].map(callback))
       .reduce((a, b) => a.concat(b), []);
-    return items.filter(element => !!element) as Type<T>[];
+    return items.filter((element) => !!element) as Type<T>[];
   }
 
   filterProvider(
