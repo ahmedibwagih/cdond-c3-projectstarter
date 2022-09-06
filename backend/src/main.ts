@@ -1,3 +1,4 @@
+
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from './modules/config/config.service';
@@ -28,7 +29,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('customTag')
     .setBasePath(apiVersionPrefix)
-    .addBearerAuth()x // here is an intentional compile error. Remove the "x" and the backend should compile.
+    .addBearerAuth() // here is an intentional compile error. Remove the "x" and the backend should compile.
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup(`api/${apiVersionPrefix}`, app, document);
