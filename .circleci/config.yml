@@ -231,10 +231,11 @@ jobs:
           name: Run migrations
           working_directory: ./backend
           command: |
-                    ls .
-                    npm install
-                    npm run migrations >> migrationStatus.txt
-                    cat migrationStatus.txt
+                  ls .
+                  npm install
+                  npm run migrations:revert
+                  npm run migrations >> migrationStatus.txt
+                  cat migrationStatus.txt
       - persist_to_workspace:
           root: ~/
           paths:
