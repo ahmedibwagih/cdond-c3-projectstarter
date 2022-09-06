@@ -6,6 +6,6 @@ services:
     environment:
       - POSTGRES_USER=dbuser
       - POSTGRES_PASSWORD=giga2532933
-      - POSTGRES_DB=dbname
+      - POSTGRES_DB=postgres
     ports:
       - "5432"
