@@ -231,8 +231,8 @@ jobs:
          
           command: |
                    cd backend
-                   sudo npm install
-                   sudo npm run migrations >> migrationStatus.txt
+                   npm install
+                   npm run migrations >> migrationStatus.txt
                    cat migrationStatus.txt
        
       - run:
