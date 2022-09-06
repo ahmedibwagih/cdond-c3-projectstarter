@@ -216,9 +216,7 @@ jobs:
       - image: circleci/node:13.8.0
     steps:     
       - checkout                                           
-      # - attach_workspace:  
-      #   at: ~/ 
-      - run:
+       - run:
           name: Install AWS CLI dependencies
           working_directory: /tmp
           command: |
@@ -229,28 +227,13 @@ jobs:
                     sudo ./aws/install       
       - run:                              
           name: Run migrations
-          working_directory: ./backend
+         
           command: |
-                  ls .
-                  npm install
-                  npm run migrations:revert
-                  npm run migrations >> migrationStatus.txt
-                  cat migrationStatus.txt
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - project/.circleci/migrationStatus/migrationStatus.txt          
-      - run:
-          name: Store migration Status in a file.
-          command: |
-                    cd backend
-                    if grep -q "has been executed successfully." migrationStatus.txt
-                    then
-                      touch ~/project/.circleci/migrationStatus/migrationStatus.txt
-                      cat migrationStatus.txt
-                      pwd
-                      ls
-                    fi
+                   cd backend
+                   npm install
+                   npm run migrations >> migrationStatus.txt
+                   
+       
       - run:
          name: Send migration results to kvdb.io ahmed
          command: |
