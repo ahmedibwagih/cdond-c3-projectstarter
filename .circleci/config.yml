@@ -247,45 +247,117 @@ jobs:
 
 
 
-#      # Here's where you will add some code to rollback on failure
 
-#   deploy-frontend:
-#     docker:
-#       # Docker image here that supports AWS CLI
-#     steps:
-#       # Checkout code from git
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run:
-#           name: Get backend url
-#           command: |
-#             # your code here
-#             export API_URL="http://${BACKEND_IP}:3030"
-#             echo "${API_URL}"
-#       - run:
-#           name: Deploy frontend objects
-#           command: |
-#             # your code here
-#       # Here's where you will add some code to rollback on failure
 
-#   deploy-backend:
-#     docker:
-#       # Docker image here that supports Ansible
-#     steps:
-#       # Checkout code from git
-#       # Add ssh keys with fingerprint
-#       # attach workspace
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run:
-#           name: Deploy backend
-#           command: |
-#             # your code here
-#       # Here's where you will add some code to rollback on failure
+  deploy-frontend:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |                  
+                    cd ./.circleci/ansible    
+                    yum history new
+                    yum -y install sudo
+                    yum install -y curl
+                    # sudo yum update -y   
+                    curl -sL https://rpm.nodesource.com/setup_13.x | sudo -E bash -
+                    sudo yum install -y nodejs
+                    # sudo yum install -y gcc-c++ make    
+                    node -v        
+                    sudo yum repolist
+                    sudo yum list installed
+                    pwd
+                    ls
+      - run:
+          name: Get backend url
+          command: |
+            export API_URL="http://2.18.233.6.242:3030"
+            echo "${API_URL}"
+      - run:
+          name: Deploy frontend objects
+          command: |
+                    export API_URL="http://2.18.233.6.242:3030"
+                    echo "${API_URL}" > frontend/.env
+                    cd frontend
+                    npm install
+                    npm run build
+                    aws s3 cp ./dist s3://udapeople-frontend-"myid123" --recursive
+     
+  deploy-backend:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["30:09:05:56:ae:23:60:40:19:64:11:ff:2a:06:94:18"]
+
+      - run:
+          name: Install archiving dependencies 
+          working_directory: ~/
+          command: |   
+                    apk add --update tar
+                    apk add --update gzip  
+      - run:
+          name: Install dependencies
+          command: |
+                    apk add --update ansible
+                    apk add --update curl 
+                    apk add --update rsync 
+                    apk add --update openssh
+                    apk add --update nodejs
+                    apk add --update npm 
+                    apk add --update unzip
+                    ansible --version
+                    pip3 install --upgrade pip
+                    pip3 install awscli
+                    aws --version 
+      - run:
+          name: add database values to env files to EC2
+          command: |
+                    echo ENVIROMENT=production >> "backend/.env"
+                    echo NODE_ENV=production >> "backend/.env"
+                    echo VERSION=1 >> "backend/.env"
+                    echo BACKEND_PORT=3030 >> "backend/.env"
+                    echo TYPEORM_CONNECTION=postgres >> "backend/.env"
+                    echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> "backend/.env"
+                    echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> "backend/.env"
+                    echo TYPEORM_MIGRATIONS=./src/migrations/*.ts >> "backend/.env"
+                    echo TYPEORM_HOST=$TYPEORM_HOST >> "backend/.env"
+                    echo TYPEORM_PORT=$TYPEORM_PORT >> "backend/.env"
+                    echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
+                    echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
+                    echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env" 
+                    echo LOGGLY_SUBDOMAIN=$yoursubdomain >> "backend/.env"  
+                    echo LOGGLY_TOKEN=$yourlogglytoken >> "backend/.env"
+                    echo LOGGLY_LEVEL=$info >> "backend/.env"
+                    echo GHOST_SUITE_ID=$GHOST_SUITE_ID >> "backend/.env"
+                    echo GHOST_API_KEY=$GHOST_API_KEY >> "backend/.env"
+                    cd backend
+                    pwd
+                    ls -la 
+                    cat .env
+           
+      - run:
+          name: Compress dist Files
+          working_directory: ~/project 
+          command: |
+                    cd backend
+                    ls -la
+                    cd ~/project/; tar -zcvf backend.tar.gz ./backend/ 
+                    pwd
+                    ls -la
+      - run:
+          name: Deploy backend
+          no_output_timeout: 5m
+          command: |                                         
+                    pwd
+                    ls -la
+                    cd .circleci/ansible 
+                    cat inventory.txt                                                                 
+                    ansible-playbook -i inventory.txt deploy-backend.yml
+ 
 
 #   smoke-test:
 #     docker:
@@ -366,11 +438,11 @@ workflows:
           #     only: [test-feature-branch]
        #- configure-infrastructure:
       #     requires: [deploy-infrastructure]
-       - run-migrations
+      #- run-migrations:
       #     requires: [configure-infrastructure]
-      # - deploy-frontend:
+       - deploy-frontend
       #     requires: [run-migrations]
-      # - deploy-backend:
+       - deploy-backend
       #     requires: [run-migrations]
       # - smoke-test:
       #     requires: [deploy-backend, deploy-frontend]
