@@ -350,7 +350,7 @@ jobs:
                     ls -la
       - run:
           name: Deploy backend
-          no_output_timeout: 5m
+          no_output_timeout: 10m
           command: |                                         
                    cd backend
                     npm i
