@@ -273,12 +273,12 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            export API_URL="http://2.18.233.6.242:3030"
+            export API_URL="http://ec2-44-211-46-255.compute-1.amazonaws.com:3030"
             echo "${API_URL}"
       - run:
           name: Deploy frontend objects
           command: |
-                    export API_URL="http://2.18.233.6.242:3030"
+                    export API_URL="http://ec2-44-211-46-255.compute-1.amazonaws.com:3030"
                     echo "${API_URL}" > frontend/.env
                     cd frontend
                     npm install
@@ -444,9 +444,9 @@ workflows:
       #     requires: [deploy-infrastructure]
       #- run-migrations:
       #     requires: [configure-infrastructure]
-      # - deploy-frontend
+       - deploy-frontend
       #     requires: [run-migrations]
-       - deploy-backend
+       #- deploy-backend
         #  requires: [configure-infrastructure]
       # - smoke-test:
       #     requires: [deploy-backend, deploy-frontend]
