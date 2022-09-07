@@ -283,7 +283,6 @@ jobs:
                     cd frontend
                     npm install
                     npm run build
-                    tar -czvf artifact-frontend-myid123.tar.gz dist
                     aws s3 cp dist s3://frontend-myid123 --recursive
      
   deploy-backend:
