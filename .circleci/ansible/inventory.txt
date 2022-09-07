@@ -1,2 +1,2 @@
 [web]
-ec2-54-165-174-164.compute-1.amazonaws.com
+54.165.174.164
