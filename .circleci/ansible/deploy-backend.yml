@@ -1,5 +1,5 @@
----
 
+---
 - name: "configuration play." 
   hosts: web
   user: ubuntu
@@ -10,3 +10,34 @@
     - ansible_stdout_callback: yaml
   roles:
     - deploy
+
+  environment:
+    ENVIRONMENT: production
+    TYPEORM_CONNECTION:
+      context:
+      - AWSPolicy
+      - Slack-notifications 
+    TYPEORM_ENTITIES:
+      context:
+      - AWSPolicy
+      - Slack-notifications 
+    TYPEORM_HOST: 
+      context:
+      - AWSPolicy
+      - Slack-notifications 
+    TYPEORM_PORT: 
+      context:
+      - AWSPolicy
+      - Slack-notifications 
+    TYPEORM_USERNAME:
+      context:
+      - AWSPolicy
+      - Slack-notifications 
+    TYPEORM_PASSWORD:
+      context:
+      - AWSPolicy
+      - Slack-notifications 
+    TYPEORM_DATABASE: 
+      context:
+      - AWSPolicy
+      - Slack-notifications
