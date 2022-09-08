@@ -1,0 +1,92 @@
+cygwin64 terminal
+aws configure
+
+user:ahmed.ib.wagih
+Secret access key : OgRXcGV7LMuHL/X1L1LAd4MeQc1CQJ8CvuIlsWGv
+Access key ID : AKIARSKZZFP3SPJMRESP
+
+
+
+
+
+aws cloudformation create-stack  --stack-name myFirstTest --region us-east-1 --template-body file://testcfn.yml
+ws cloudformation create-stack  --stack-name project2Stack--region us-east-1 --template-body file://cSecond-project.yml --parameters file://parameters.json
+
+
+aws cloudformation create-stack  --stack-name project2Stack --region us-east-1 --template-body file://Second-project.yml --parameters file://parameters.json
+aws cloudformation create-stack  --stack-name StackP2 --region us-east-1 --template-body file://Network.yml --parameters file://Network-parameters.json
+
+[ansible]
+echo "[all]" > inventory
+aws ec2 describe-instances    --query 'Reservations[*].Instances[*].PublicIpAddress'    --output text >> inventory
+cat inventory
+
+ansible-playbook ~/p/main2.yml
+ansible-playbook -i ~/p/inventory.txt ~/p/main3.yml --private-key ~/p/newkey.pem
+
+
+ssh -i "~/p/newkey.pem" ubuntu@ec2-3-84-46-73.compute-1.amazonaws.com
+
+
+pip install --user ansible  --force
+
+/c/Users/giga/ansible/hacking/env-setup
+https://phoenixnap.com/kb/how-to-install-python-3-windows
+https://geekflare.com/ansible-installation-windows/
+pip3 install "pywinrm>=0.3.0"
+
+install prometheus
+https://codewizardly.com/prometheus-on-aws-ec2-part1/
+https://codewizardly.com/prometheus-on-aws-ec2-part2/
+
+https://codewizardly.com/prometheus-on-aws-ec2-part3/
+
+
+
+
+    image: "postgres"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=glee
+    ports:
+      - "5532:5432"
+
+
+
+
+curl https://kvdb.io/FngteSXUS4uipssbiMphWa/id -d 'value'
+curl --insecure  https://kvdb.io/FngteSXUS4uipssbiMphWa/name
+8cAZxFfPaQEjvZtgNv6tDD
+FngteSXUS4uipssbiMphWa
+
+slack
+xoxb-3562588158196-4040645333139-TFMOVCc5Io304eSSLVEVRvGC
+In cicle Enciroment
+SLACK_ACCESS_TOKEN :gpxTTSlBbLHe4GixzfgThbnl
+SLACK_DEFAULT_CHANNEL :A0413NPAXPX
+
+
+[database]
+Username:dbuser
+Password:giga2532933
+Instance identifier: dbname
+Database name: postgres (default)
+Endpoint:dbname.crks2lvtqk6e.us-east-1.rds.amazonaws.com
+port:5432
+
+cd .circleci/files
+aws cloudformation deploy  --template-file cloudfront.yml   --stack-name InitialStack     --parameter-overrides WorkflowID=ahmed-kk1j287dhjppmz437
+
+
+
+[bucket]
+ahmed-kk1j287dhjppmz437
+[cloud front for buket]
+d15hp13fd5uoph.cloudfront.net
+
+[backend]
+
+
+
+

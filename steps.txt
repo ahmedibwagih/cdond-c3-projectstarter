@@ -1,0 +1,64 @@
+﻿[create database]
+	Username:dbuser
+	Password:giga2532933
+	Instance identifier: dbname
+	Database name: postgres (default)
+	Endpoint:dbname.crks2lvtqk6e.us-east-1.rds.amazonaws.com
+	port:5432
+
+
+[deploy-infrastructure]
+	create EC2  : ec2-44-211-46-255.compute-1.amazonaws.com
+	create bucket 
+[configure-infrastructure]
+	configure posgresql data in ec2
+[deploy-frontend]
+copy site to bucket
+[deploy-frontend]
+	read readme
+
+لظبط قاعده البيانات في backend
+لابد من ظبط ملف .env
+وعمل migraion
+
+[create cloud front]
+	 for bucket 2  https://d1bflsjqgxjjew.cloudfront.net/index.html#/employees
+		       https://frontend-myid123.s3.amazonaws.com/index.html#/employees
+كده الفرونت تمام فاضل الباك
+jdbc:postgresql://dbname.crks2lvtqk6e.us-east-1.rds.amazonaws.com:5432/postgres
+
+tar -xf backend.tar.gz
+tar –xvzf backend.tar.gz
+mkdir -p /Albums/Rock/Led_Zeppelin/"
+scp -i newkey.pem inventory.txt ubuntu@ec2-54-165-174-164.compute-1.amazonaws.com:~/.
+scp -i newkey.pem send.pem ubuntu@ec2-54-165-174-164.compute-1.amazonaws.com:~/.
+scp -i newkey.pem /project3 ubuntu@ec2-54-165-174-164.compute-1.amazonaws.com:~/project3.
+scp -r ubuntu@ec2-54-165-174-164.compute-1.amazonaws.com:/send/project ~/
+
+
+[to zip]
+tar -zcvf backend.tar.gz ./backend/
+[to send] 
+scp -i newkey.pem backend.tar.gz ubuntu@ec2-54-165-174-164.compute-1.amazonaws.com:~/.
+[in ec2 to unzip]
+tar -xf backend.tar.gz
+[to remove]
+rm ddd.d
+rm -r ddd
+
+
+http://ec2-44-211-46-255.compute-1.amazonaws.com:3030/api/Employees
+httpService.ts:20 Mixed Content: The page at 
+'https://frontend-myid123.s3.amazonaws.com/index.html#/employees' 
+was loaded over HTTPS, but requested an insecure resource 
+'http://ec2-44-211-46-255.compute-1.amazonaws.com:3030/api/Employees?'
+. This request has been blocked; the content must be served over HTTPS.
+
+
+
+
+
+
+
+
+
