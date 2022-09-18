@@ -257,16 +257,16 @@ jobs:
       - checkout
       - run:
           name: Install dependencies
-          command: |                  
-                    cd ./.circleci/ansible    
+          command: |
+                    cd ./.circleci/ansible
                     yum history new
                     yum -y install sudo
                     yum install -y curl
-                    # sudo yum update -y   
+                    # sudo yum update -y
                     curl -sL https://rpm.nodesource.com/setup_13.x | sudo -E bash -
                     sudo yum install -y nodejs
-                    # sudo yum install -y gcc-c++ make    
-                    node -v        
+                    # sudo yum install -y gcc-c++ make
+                    node -v
                     sudo yum repolist
                     sudo yum list installed
                     pwd
@@ -285,7 +285,7 @@ jobs:
                     npm install
                     npm run build
                     aws s3 cp dist s3://frontend-myid1234 --recursive
-     
+
   deploy-backend:
     docker:
       - image: python:3.7-alpine3.11
@@ -294,25 +294,25 @@ jobs:
       - add_ssh_keys:
           fingerprints: ["79:3d:00:53:89:e2:5a:15:a3:1c:c9:be:7a:54:f9:68"]
       - run:
-          name: Install archiving dependencies 
+          name: Install archiving dependencies
           working_directory: ~/
-          command: |   
+          command: |
                     apk add --update tar
-                    apk add --update gzip  
+                    apk add --update gzip
       - run:
           name: Install dependencies
           command: |
                     apk add --update ansible
-                    apk add --update curl 
-                    apk add --update rsync 
+                    apk add --update curl
+                    apk add --update rsync
                     apk add --update openssh
                     apk add --update nodejs
-                    apk add --update npm 
+                    apk add --update npm
                     apk add --update unzip
                     ansible --version
                     pip3 install --upgrade pip
                     pip3 install awscli
-                    aws --version 
+                    aws --version
       - run:
           name: add database values to env files to EC2
           command: |
@@ -328,41 +328,44 @@ jobs:
                     echo TYPEORM_PORT=$TYPEORM_PORT >> "backend/.env"
                     echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
                     echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
-                    echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env" 
-                    echo LOGGLY_SUBDOMAIN=$yoursubdomain >> "backend/.env"  
+                    echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
+                    echo LOGGLY_SUBDOMAIN=$yoursubdomain >> "backend/.env"
                     echo LOGGLY_TOKEN=$yourlogglytoken >> "backend/.env"
                     echo LOGGLY_LEVEL=$info >> "backend/.env"
                     echo GHOST_SUITE_ID=$GHOST_SUITE_ID >> "backend/.env"
                     echo GHOST_API_KEY=$GHOST_API_KEY >> "backend/.env"
                     cd backend
                     pwd
-                    ls -la 
+                    ls -la
                     cat .env
-           
+
       - run:
           name: Compress dist Files
-          working_directory: ~/project 
+          working_directory: ~/project
           command: |
                     cd backend
                     ls -la
-                    cd ~/project/; tar -zcvf backend.tar.gz ./backend/ 
+                    cd ~/project/; tar -zcvf backend.tar.gz ./backend/
                     pwd
                     ls -la
       - run:
           name: Deploy backend
           no_output_timeout: 5m
-          command: |                                         
+          command: |
                    cd backend
                     npm i
                     npm run build
                     cd ..
                     # Zip the directory
                     tar -C backend -czvf backend.tar.gz .
-                    cd .circleci/ansible
-                    echo "Contents  of the inventory.txt file is -------"
-                    cat inventory.txt
-                    ansible-playbook -i inventory.txt deploy-backend.yml
- 
+                    scp -i newkey.pem backend.tar.gz ubuntu@ec2-54-144-48-229.compute-1.amazonaws.com:~/
+
+
+# cd .circleci/ansible
+# echo "Contents  of the inventory.txt file is -------"
+# cat inventory.txt
+# ansible-playbook -i inventory.txt deploy-backend.yml
+
 
 #   smoke-test:
 #     docker:
