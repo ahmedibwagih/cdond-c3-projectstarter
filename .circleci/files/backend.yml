@@ -116,7 +116,7 @@ Resources:
         SecurityGroups:
         - Ref: WebServerSecGroup
         ImageId: ami-09e67e426f25ce0d7
-        KeyName: server-manage
+        KeyName: newkey
         Tags:
           - Key: Name
             Value: !Sub udapeople-backend-${ID}
