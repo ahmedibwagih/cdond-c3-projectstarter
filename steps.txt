@@ -1,7 +1,7 @@
 ﻿[create database]
-	Username:dbuser
+	Username:postgres
 	Password:giga2532933
-	Instance identifier: dbname
+	Instance identifier: dbinstance
 	Database name: postgres (default)
 	Endpoint:dbname.crks2lvtqk6e.us-east-1.rds.amazonaws.com
 	port:5432
