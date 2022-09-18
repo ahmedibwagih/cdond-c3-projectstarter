@@ -274,12 +274,12 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            export API_URL="http://ec2-44-211-46-255.compute-1.amazonaws.com:3030"
+            export API_URL="ec2-54-144-48-229.compute-1.amazonaws.com:3030"
             echo "${API_URL}"
       - run:
           name: Deploy frontend objects
           command: |
-                    export API_URL="http://ec2-44-211-46-255.compute-1.amazonaws.com:3030"
+                    export API_URL="ec2-54-144-48-229.compute-1.amazonaws.com:3030"
                     echo "${API_URL}" > frontend/.env
                     cd frontend
                     npm install
@@ -441,11 +441,11 @@ workflows:
           # filters:
           #   branches:
           #     only: [test-feature-branch]
-       - configure-infrastructure
+      # - configure-infrastructure
       #     requires: [deploy-infrastructure]
       #- run-migrations:
       #     requires: [configure-infrastructure]
-      # - deploy-frontend
+       - deploy-frontend
       #     requires: [run-migrations]
        #- deploy-backend
         #  requires: [configure-infrastructure]
