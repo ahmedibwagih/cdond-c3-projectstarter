@@ -349,7 +349,7 @@ jobs:
                     cd ..
                     # Zip the directory
                     tar -C backend -czvf backend.tar.gz .
-                    scp -i newkey.pem backend.tar.gz ubuntu@ec2-54-144-48-229.compute-1.amazonaws.com:~/
+                   aws s3 cp backend.tar.gz s3://frontend-myid1234/here --recursive
 
 
 # cd .circleci/ansible
