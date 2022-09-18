@@ -1,11 +1,12 @@
 ﻿[create database]
-	Username:postgres
+	Username:dbuser
 	Password:giga2532933
-	Instance identifier: dbinstance
+	Instance identifier: dbname
 	Database name: postgres (default)
 	Endpoint:dbname.crks2lvtqk6e.us-east-1.rds.amazonaws.com
 	port:5432
 
+jdbc:postgresql://dbname.crks2lvtqk6e.us-east-1.rds.amazonaws.com:5432/postgres
 
 [deploy-infrastructure]
 	create EC2  : ec2-44-211-46-255.compute-1.amazonaws.com
