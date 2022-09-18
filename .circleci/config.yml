@@ -292,7 +292,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["30:09:05:56:ae:23:60:40:19:64:11:ff:2a:06:94:18"]
+          fingerprints: ["79:3d:00:53:89:e2:5a:15:a3:1c:c9:be:7a:54:f9:68"]
       - run:
           name: Install archiving dependencies 
           working_directory: ~/
