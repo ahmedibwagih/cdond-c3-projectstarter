@@ -341,7 +341,6 @@ jobs:
 
       - run:
           name: Deploy backend
-          no_output_timeout: 5m
           command: |
                    cd backend
                     npm i
