@@ -9,7 +9,7 @@
 jdbc:postgresql://dbname.crks2lvtqk6e.us-east-1.rds.amazonaws.com:5432/postgres
 
 [deploy-infrastructure]
-	create EC2  : ec2-44-211-46-255.compute-1.amazonaws.com
+	create EC2  : ec2-54-144-48-229.compute-1.amazonaws.com   - 54.144.48.229
 	create bucket 
 [configure-infrastructure]
 	configure posgresql data in ec2
