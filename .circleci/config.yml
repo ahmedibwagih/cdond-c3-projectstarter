@@ -343,11 +343,8 @@ jobs:
           name: Deploy backend
           command: |
                    cd backend
-                    npm i
-                    npm run build
-                    cd ..
-                    tar -zcvf backend.tar.gz backend/
-                   aws s3 cp backend.tar.gz s3://frontend-myid1234/backend2 --recursive
+                   aws s3 cp s3://frontend-myid1234/backend c:/ggg --recursive
+
 
 
 # cd .circleci/ansible
