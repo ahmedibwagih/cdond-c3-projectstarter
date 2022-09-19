@@ -404,15 +404,15 @@ jobs:
       - run:
           name: Frontend smoke test.
           command: |
-                    FrontendURLtest="https://d3vky89yj0g7g2.cloudfront.net/index.html#/employees/new123"
+                    FrontendURLtest="https://d3vky89yj0g7g2.cloudfront.net/index.html#/employees/new"
                     echo "${FrontendURLtest}"
                     if curl -s ${FrontendURLtest} | grep "Welcome"
                     then
                       echo "Successful front-end Smoke-test"
-                      return 0
+                     failed()
                     else
                       echo "Unsuccessful front-end Smoke-test"
-                      return 0
+                      failed()
                     fi               
       - destroy-environment
       - revert-migrations          
