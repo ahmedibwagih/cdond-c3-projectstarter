@@ -4,7 +4,6 @@
 version: 2.1
 orbs:
   slack: circleci/slack@4.10.1
-
 commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -20,24 +19,39 @@ commands:
                     aws cloudformation delete-stack --stack-name udapeople-backend-myid1234ee
                     aws cloudformation delete-stack --stack-name udapeople-frontend-myid1234ee
 
+
   revert-migrations:
-    description: Revert the last migration if successfully run in the current workflow.
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
-      # Add parameter here
+      when_to_destroy:
+        type: string
+        default: "on_fail"
     steps:
       - run:
-          name: npm start
-          # Add when this will run
+          name: Destroy environments
+          when: on_fail
           command: |
-            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS = 1
-            if(( $SUCCESS==1 ));
-            then
-            #  cd ~/project/backend
-            #  npm install
-            #  Add revert code here. You can find this in the Getting Started section.
-              exit 1
-            fi
+                    aws cloudformation delete-stack --stack-name udapeople-backend-myid1234ee
+                    aws cloudformation delete-stack --stack-name udapeople-frontend-myid1234ee
+
+  # revert-migrations:
+  #   description: Revert the last migration if successfully run in the current workflow.
+  #   parameters:
+  #     # Add parameter here
+  #   steps:
+  #     - run:
+  #         name: npm start
+  #         # Add when this will run
+  #         command: |
+  #           # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
+  #           SUCCESS = 1
+  #           if(( $SUCCESS==1 ));
+  #           then
+  #           #  cd ~/project/backend
+  #           #  npm install
+  #           #  Add revert code here. You can find this in the Getting Started section.
+  #             exit 1
+  #           fi
 
 jobs:
   build-frontend:
