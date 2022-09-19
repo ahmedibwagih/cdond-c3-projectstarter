@@ -404,7 +404,7 @@ jobs:
       - run:
           name: Frontend smoke test.
           command: |
-                    FrontendURLtest="https://d3vky89yj0g7g2.cloudfront.net/index.html#/employees/new"
+                    FrontendURLtest="https://d3vky89yj0g7g2.cloudfront.net/index.html#/employees/new123"
                     echo "${FrontendURLtest}"
                     if curl -s ${FrontendURLtest} | grep "Welcome"
                     then
