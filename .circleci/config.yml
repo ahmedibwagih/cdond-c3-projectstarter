@@ -409,8 +409,10 @@ jobs:
                     if curl -s ${FrontendURLtest} | grep "Welcome"
                     then
                       echo "Successful front-end Smoke-test"
+                      return 0
                     else
                       echo "Unsuccessful front-end Smoke-test"
+                      return 0
                     fi               
       - destroy-environment
       - revert-migrations          
