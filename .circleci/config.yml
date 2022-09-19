@@ -17,27 +17,27 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-                    aws cloudformation delete-stack --stack-name udapeople-backend-myid1234
-                    aws cloudformation delete-stack --stack-name udapeople-frontend-myid1234
+                    aws cloudformation delete-stack --stack-name udapeople-backend-myid1234ee
+                    aws cloudformation delete-stack --stack-name udapeople-frontend-myid1234ee
 
-#   revert-migrations:
-#     description: Revert the last migration if successfully run in the current workflow.
-#     parameters:
-#       # Add parameter here
-#     steps:
-#       - run:
-#           name: Revert migrations
-#           # Add when this will run
-#           command: |
-#             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-#             SUCCESS = 1
-#             if(( $SUCCESS==1 ));
-#             then
-#             #  cd ~/project/backend
-#             #  npm install
-#             #  Add revert code here. You can find this in the Getting Started section.
-#               exit 1
-#             fi
+  revert-migrations:
+    description: Revert the last migration if successfully run in the current workflow.
+    parameters:
+      # Add parameter here
+    steps:
+      - run:
+          name: npm start
+          # Add when this will run
+          command: |
+            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
+            SUCCESS = 1
+            if(( $SUCCESS==1 ));
+            then
+            #  cd ~/project/backend
+            #  npm install
+            #  Add revert code here. You can find this in the Getting Started section.
+              exit 1
+            fi
 
 jobs:
   build-frontend:
@@ -179,6 +179,7 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
       # - destroy-environment
+      # -revert-migrations
 
 
   configure-infrastructure:
@@ -209,7 +210,7 @@ jobs:
                     cd .circleci/ansible
                     cat inventory.txt
                     ansible-playbook -i inventory.txt configure-server.yml
-
+      -destroy-environment
 
 
 
@@ -343,14 +344,63 @@ jobs:
           name: Deploy backend
           command: |
                    cd backend
-                   aws s3 cp s3://frontend-myid1234/backend ggggggggg --recursive
+                   tar -zcvf backend.tar.gz ./backend/
+                   cd .circleci/ansible
+                   echo "Contents  of the inventory.txt file is -------"
+                   cat inventory.txt
+                   ansible-playbook -i inventory.txt deploy-backend.yml
 
 
 
-# cd .circleci/ansible
-# echo "Contents  of the inventory.txt file is -------"
-# cat inventory.txt
-# ansible-playbook -i inventory.txt deploy-backend.yml
+
+
+
+  smoke-test:
+    docker:
+      - image: python:3.7-alpine3.11                                      
+    steps:
+      - checkout                                                
+      - run:
+          name: Install dependencies                             
+          working_directory: ~/
+          command: |   
+                    apk add --update tar
+                    apk add --update gzip  
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+                    apk add --update curl 
+                    apk add --update rsync 
+                    apk add --update curl
+                    apk add --update openssh
+                    apk add --update openssh-client 
+                    pip3 install --upgrade pip 
+                    pip install awscli 
+                    aws --version 
+                    pwd
+                    ls -la
+      - run:
+          name: Backend smoke test.
+          command: |
+                    export Backend_url_test="http://ec2-54-144-48-229.compute-1.amazonaws.com:3030/api/status"
+                    echo "${Backend_url_test}"
+                    curl ${Backend_url_test}
+      - run:
+          name: Frontend smoke test.
+          command: |
+                    FrontendURLtest="https://d3vky89yj0g7g2.cloudfront.net/index.html#/employees/new"
+                    echo "${FrontendURLtest}"
+                    if curl -s ${FrontendURLtest} | grep "Welcome"
+                    then
+                      echo "Successful front-end Smoke-test"
+                    else
+                      echo "Unsuccessful front-end Smoke-test"
+                    fi               
+      - destroy-environment
+      -revert-migrations          
+                 
 
 
 #   smoke-test:
